@@ -1,0 +1,48 @@
+{
+  "name": "tracecards",
+  "version": "0.0.1",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "homepage": "https://tracecards.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visualrecall/tracecards.git"
+  },
+  "bugs": {
+    "url": "https://github.com/visualrecall/tracecards/issues"
+  },
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "npm run dev -w @tracecards/obsidian",
+    "build": "npm run build -w @tracecards/obsidian",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run test",
+    "dev-vault": "node scripts/dev-vault.mjs",
+    "gen-vault": "node scripts/gen-vault.mjs",
+    "preversion": "node scripts/version-bump.mjs && npm run check",
+    "version": "node scripts/version-bump.mjs && git add manifest.json versions.json",
+    "release": "npm version --tag-version-prefix= --message \"chore(release): %s\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-obsidianmd": "^0.4.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.1"
+  }
+}

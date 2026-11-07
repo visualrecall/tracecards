@@ -1,0 +1,1 @@
+Inside a hidden folder.

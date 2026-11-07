@@ -1,0 +1,100 @@
+{
+  "decks": [
+    {
+      "name": "Product Strategy",
+      "icon": "target",
+      "cover": "Jobs To Be Done",
+      "rank": 1,
+      "hasDeckFile": true,
+      "cards": [
+        {
+          "path": "Product Strategy/Second-Order Thinking.md",
+          "title": "Second-Order Thinking",
+          "id": "01JBQ70000000000000000S0T1",
+          "kind": "idea",
+          "description": "Ask \"and then what?\" before acting.",
+          "rank": 1,
+          "created": "2026-10-20T08:30:00Z",
+          "bookmarks": []
+        },
+        {
+          "path": "Product Strategy/Jobs To Be Done.md",
+          "title": "Jobs To Be Done",
+          "id": "01JBQ6Z7X8Y9K2M3N4P5Q6R7S8",
+          "kind": "idea",
+          "description": "People don't buy products, they hire them to make progress.",
+          "cover": "jtbd-cover.png",
+          "coverCrop": [
+            0.1,
+            0,
+            0.8,
+            1
+          ],
+          "rank": 1.5,
+          "created": "2026-10-28T12:00:00Z",
+          "bookmarks": [
+            {
+              "url": "https://youtu.be/jtbdTalk001",
+              "title": "Talk on jobs to be done",
+              "primary": true,
+              "videoId": "jtbdTalk001"
+            },
+            {
+              "url": "https://en.wikipedia.org/wiki/Outcome-Driven_Innovation",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "path": "Product Strategy/Moats.md",
+          "title": "Moats",
+          "kind": "idea",
+          "description": "What keeps competitors from copying you.",
+          "created": "2026-10-01T09:00:00Z",
+          "bookmarks": []
+        },
+        {
+          "path": "Product Strategy/Pricing.md",
+          "title": "Pricing",
+          "kind": "idea",
+          "bookmarks": []
+        }
+      ]
+    },
+    {
+      "name": "Reading",
+      "hasDeckFile": false,
+      "cards": [
+        {
+          "path": "Reading/Thinking, Fast and Slow.md",
+          "title": "Thinking, Fast and Slow",
+          "id": "01JBQ71111111111111111TFS1",
+          "kind": "idea",
+          "description": "Two systems of thought, and the biases between them.",
+          "created": "2026-09-15T18:00:00Z",
+          "bookmarks": [
+            {
+              "url": "https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow",
+              "title": "Wikipedia",
+              "primary": false
+            }
+          ]
+        },
+        {
+          "path": "Reading/Atomic Habits.md",
+          "title": "Atomic Habits",
+          "kind": "idea",
+          "description": "Small changes, compounded.",
+          "created": "2026-09-20T07:00:00Z",
+          "bookmarks": [
+            {
+              "url": "https://www.youtube.com/watch?v=habitsTalk1&t=42",
+              "primary": true,
+              "videoId": "habitsTalk1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "decks": [
+    {
+      "name": "Zeta",
+      "rank": 1,
+      "hasDeckFile": true,
+      "cards": []
+    },
+    {
+      "name": "Books",
+      "hasDeckFile": false,
+      "cards": [
+        {
+          "path": "Books/Psychology/Thinking, Fast and Slow.md",
+          "title": "Thinking, Fast and Slow",
+          "kind": "idea",
+          "created": "2026-01-01T00:00:00Z",
+          "bookmarks": []
+        },
+        {
+          "path": "Books/Atomic Habits.md",
+          "title": "Atomic Habits",
+          "kind": "idea",
+          "created": "2026-01-02T00:00:00Z",
+          "bookmarks": []
+        }
+      ]
+    },
+    {
+      "name": "Empty Deck",
+      "hasDeckFile": false,
+      "cards": []
+    }
+  ]
+}

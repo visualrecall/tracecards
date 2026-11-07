@@ -1,0 +1,133 @@
+{
+  "decks": [
+    {
+      "name": "Mixed",
+      "cover": "Unknown kind",
+      "hasDeckFile": true,
+      "cards": [
+        {
+          "path": "Mixed/Unknown kind.md",
+          "title": "Unknown kind",
+          "kind": "idea",
+          "rank": 1,
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/Unquoted cover.md",
+          "title": "Unquoted cover",
+          "kind": "idea",
+          "cover": "photo.png",
+          "coverCrop": [
+            0,
+            0.25,
+            1,
+            0.5
+          ],
+          "rank": 2,
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/Bad crop.md",
+          "title": "Bad crop",
+          "kind": "idea",
+          "cover": "photo.png",
+          "rank": 3,
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/Bookmarks.md",
+          "title": "Bookmarks",
+          "kind": "idea",
+          "rank": 4,
+          "bookmarks": [
+            {
+              "url": "https://example.com/article",
+              "title": "Article",
+              "primary": true
+            },
+            {
+              "url": "https://www.youtube.com/watch?feature=share&v=abcdefghijk&t=95",
+              "primary": false,
+              "videoId": "abcdefghijk"
+            },
+            {
+              "url": "https://youtu.be/ABCDEFGHIJK?t=10",
+              "primary": false,
+              "videoId": "ABCDEFGHIJK"
+            }
+          ]
+        },
+        {
+          "path": "Mixed/Wrong types.md",
+          "title": "Wrong types",
+          "kind": "idea",
+          "rank": 5,
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/CRLF and BOM.md",
+          "title": "CRLF and BOM",
+          "id": "01JBQ72222222222222222CRWF",
+          "kind": "idea",
+          "description": "Windows line endings",
+          "rank": 6,
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/Duplicate id A.md",
+          "title": "Duplicate id A",
+          "id": "01JBQ8AAAAAAAAAAAAAAAAAAAA",
+          "kind": "idea",
+          "rank": 7,
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/Duplicate id B.md",
+          "title": "Duplicate id B",
+          "kind": "idea",
+          "rank": 8,
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/Date created.md",
+          "title": "Date created",
+          "kind": "idea",
+          "created": "2026-10-28",
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/Empty frontmatter.md",
+          "title": "Empty frontmatter",
+          "kind": "idea",
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/Invalid YAML.md",
+          "title": "Invalid YAML",
+          "kind": "idea",
+          "bookmarks": [],
+          "frontmatterError": true
+        },
+        {
+          "path": "Mixed/List frontmatter.md",
+          "title": "List frontmatter",
+          "kind": "idea",
+          "bookmarks": [],
+          "frontmatterError": true
+        },
+        {
+          "path": "Mixed/No frontmatter.md",
+          "title": "No frontmatter",
+          "kind": "idea",
+          "bookmarks": []
+        },
+        {
+          "path": "Mixed/Unclosed frontmatter.md",
+          "title": "Unclosed frontmatter",
+          "kind": "idea",
+          "bookmarks": []
+        }
+      ]
+    }
+  ]
+}

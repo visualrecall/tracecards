@@ -1,0 +1,5 @@
+# Docs are hand-formatted; fixtures are test input and must stay byte-for-byte.
+*.md
+spec/fixtures/
+dev-vault/
+package-lock.json

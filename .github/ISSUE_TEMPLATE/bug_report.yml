@@ -1,0 +1,55 @@
+name: Bug report
+description: Something in Tracecards doesn't work as it should
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead? A screenshot or screen recording helps.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Tracecards
+        2. …
+    validations:
+      required: false
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Tracecards version
+      description: Settings → Community plugins → Tracecards
+      placeholder: "0.6.0"
+    validations:
+      required: true
+  - type: input
+    id: obsidian-version
+    attributes:
+      label: Obsidian version
+      description: Settings → General → "Current version"
+      placeholder: "1.13.2"
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - iOS or iPadOS
+        - Android
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Other plugins or a custom theme or CSS snippet that might matter, and any errors from the developer console (Ctrl/Cmd+Shift+I).
+    validations:
+      required: false

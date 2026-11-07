@@ -1,0 +1,77 @@
+# Publishes a release when a version tag is pushed (`npm run release` makes it; see CONTRIBUTING.md).
+# Based on Obsidian's "Release your plugin with GitHub Actions" guide, in two jobs: `build` runs the
+# dependencies with a read-only token, and `release`, which can publish, runs none of them. The
+# release is published as soon as its files are attached: Obsidian offers the update once
+# manifest.json on main has the new version, and a draft's files can't be downloaded.
+name: Release
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+permissions: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The whole history, for the release notes since the previous tag.
+          fetch-depth: 0
+          persist-credentials: false
+
+      # No dependency cache, so nothing another run saved can end up in a release.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Check the tag matches manifest.json and versions.json
+        run: |
+          tag="$GITHUB_REF_NAME"
+          test "$(jq -r .version manifest.json)" = "$tag" || { echo "manifest.json isn't at $tag"; exit 1; }
+          jq -e --arg tag "$tag" 'has($tag)' versions.json > /dev/null || { echo "versions.json has no $tag"; exit 1; }
+
+      # Without install scripts, which is how most malicious packages run on install.
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: npm run build
+      - run: node scripts/release-notes.mjs "$GITHUB_REF_NAME" > apps/obsidian/dist/notes.md
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release
+          path: apps/obsidian/dist/
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: release
+
+      - name: Attest build provenance
+        uses: actions/attest@v4
+        with:
+          subject-path: |
+            main.js
+            manifest.json
+            styles.css
+
+      # Created as a draft and published once its files are attached, which immutable releases need.
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag --draft \
+            --title "$GITHUB_REF_NAME" --notes-file notes.md main.js manifest.json styles.css
+          gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false

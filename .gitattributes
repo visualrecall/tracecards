@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# Fixture vaults are test input and must stay byte-for-byte (one tests CRLF and a BOM).
+spec/fixtures/**/vault/** -text

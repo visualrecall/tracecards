@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tracecards logo</title>
+    <link rel="icon" href="favicon.svg" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #0b0f0f;
+        color: #e6efec;
+        font:
+          14px/1.4 system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      main {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+      }
+      h2 {
+        margin: 0 0 12px;
+        color: #9aa9a6;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .panel {
+        display: flex;
+        align-items: flex-end;
+        gap: 28px;
+        flex-wrap: wrap;
+        padding: 28px;
+        border-radius: 18px;
+      }
+      .light {
+        background: #e9eceb;
+        color: #555;
+      }
+      .dark {
+        background: #1c1c1e;
+        color: #aaa;
+      }
+      .ink {
+        background: #0b1b1d;
+        color: #9aa9a6;
+      }
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      figure {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+      }
+      .app {
+        border-radius: 22.5%;
+      }
+      .tabs {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 18px 24px;
+        border-radius: 18px;
+        background: #dfe3e2;
+      }
+      .tab {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 34px;
+        padding: 0 14px;
+        border-radius: 10px 10px 0 0;
+        font-size: 13px;
+      }
+      .lockups {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .lockup {
+        display: flex;
+        align-items: center;
+        height: 88px;
+        padding: 0 28px;
+        border-radius: 14px;
+      }
+      .lockup img {
+        height: 26px;
+      }
+      .landing {
+        background: linear-gradient(135deg, #0d3b37, #146b5e);
+      }
+      p {
+        margin: 0;
+        color: #9aa9a6;
+      }
+      @media (max-width: 700px) {
+        .lockups {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Tracecards logo</h1>
+
+      <section>
+        <h2>Mark, for large sizes</h2>
+        <div class="stack">
+          <div class="panel ink">
+            <figure><img src="mark-teal.svg" width="128" height="128" alt="" />mark-teal</figure>
+            <figure><img src="mark-white.svg" width="128" height="128" alt="" />mark-white</figure>
+            <figure><img src="mark-teal.svg" width="64" height="64" alt="" />64px</figure>
+          </div>
+          <div class="panel light">
+            <figure><img src="mark-black.svg" width="128" height="128" alt="" />mark-black</figure>
+            <figure><img src="mark-black.svg" width="64" height="64" alt="" />64px</figure>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Mark, for 32px and under</h2>
+        <div class="stack">
+          <div class="panel ink">
+            <figure><img src="mark-small-teal.svg" width="32" height="32" alt="" />teal 32</figure>
+            <figure><img src="mark-small-teal.svg" width="24" height="24" alt="" />24</figure>
+            <figure><img src="mark-small-teal.svg" width="16" height="16" alt="" />16</figure>
+            <figure>
+              <img src="mark-small-white.svg" width="32" height="32" alt="" />white 32
+            </figure>
+            <figure><img src="mark-small-white.svg" width="24" height="24" alt="" />24</figure>
+            <figure><img src="mark-small-white.svg" width="16" height="16" alt="" />16</figure>
+          </div>
+          <div class="panel light">
+            <figure>
+              <img src="mark-small-black.svg" width="32" height="32" alt="" />black 32
+            </figure>
+            <figure><img src="mark-small-black.svg" width="24" height="24" alt="" />24</figure>
+            <figure><img src="mark-small-black.svg" width="16" height="16" alt="" />16</figure>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>App icon</h2>
+        <div class="stack">
+          <div class="panel light">
+            <figure>
+              <img class="app" src="app-icon.svg" width="180" height="180" alt="" />180px
+            </figure>
+            <figure>
+              <img class="app" src="app-icon.svg" width="120" height="120" alt="" />120px
+            </figure>
+            <figure>
+              <img class="app" src="app-icon.svg" width="76" height="76" alt="" />76px
+            </figure>
+            <figure>
+              <img class="app" src="app-icon.svg" width="60" height="60" alt="" />60px
+            </figure>
+            <figure>
+              <img class="app" src="app-icon.svg" width="40" height="40" alt="" />40px
+            </figure>
+          </div>
+          <div class="panel dark">
+            <figure>
+              <img class="app" src="app-icon.svg" width="180" height="180" alt="" />180px
+            </figure>
+            <figure>
+              <img class="app" src="app-icon.svg" width="120" height="120" alt="" />120px
+            </figure>
+            <figure>
+              <img class="app" src="app-icon.svg" width="76" height="76" alt="" />76px
+            </figure>
+            <figure>
+              <img class="app" src="app-icon.svg" width="60" height="60" alt="" />60px
+            </figure>
+            <figure>
+              <img class="app" src="app-icon.svg" width="40" height="40" alt="" />40px
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Favicon</h2>
+        <div class="tabs">
+          <div class="tab" style="background: #fff; color: #333">
+            <img src="favicon.svg" width="16" height="16" alt="" />Tracecards
+          </div>
+          <div class="tab" style="background: #f1f3f4; color: #333">
+            <img src="favicon.svg" width="16" height="16" alt="" />Tracecards
+          </div>
+          <div class="tab" style="background: #35363a; color: #eee">
+            <img src="favicon.svg" width="16" height="16" alt="" />Tracecards
+          </div>
+          <div class="tab" style="background: #fff; color: #333">
+            <img src="favicon.svg" width="32" height="32" alt="" />32px
+          </div>
+          <div class="tab" style="background: #35363a; color: #eee">
+            <img src="favicon.svg" width="32" height="32" alt="" />32px
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Wordmark</h2>
+        <div class="lockups">
+          <div class="lockup landing"><img src="wordmark-white.svg" alt="Tracecards" /></div>
+          <div class="lockup ink"><img src="wordmark-teal.svg" alt="Tracecards" /></div>
+          <div class="lockup" style="background: #f4f6f5">
+            <img src="wordmark-black.svg" alt="Tracecards" />
+          </div>
+          <div class="lockup" style="background: #000">
+            <img src="wordmark-white.svg" alt="Tracecards" />
+          </div>
+        </div>
+      </section>
+
+      <p>Files and colours are listed in README.md.</p>
+    </main>
+  </body>
+</html>

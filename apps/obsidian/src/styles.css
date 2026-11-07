@@ -1,0 +1,294 @@
+/* The screens' styles, then the plugin's own. */
+@import "@tracecards/ui/styles.css";
+
+/*
+ * Card modal: a fixed size within the window, with the grid behind it blurred and dimmed almost
+ * to black. The class is on Obsidian's modal container, which holds the background and the
+ * modal. Obsidian fades the background in to 85% opacity, so black gives 85% black. On phones
+ * Obsidian shows modals full screen.
+ */
+body:not(.is-phone) :is(.tracecards-card-modal, .tracecards-card-form-modal) {
+  backdrop-filter: blur(3px);
+}
+
+:is(.tracecards-card-modal, .tracecards-card-form-modal) .modal-bg {
+  background-color: black;
+}
+
+body:not(.is-phone) .tracecards-card-modal .modal {
+  width: 1100px;
+  height: 680px;
+  max-width: 95vw;
+  max-height: 90vh;
+  padding: var(--size-4-8);
+}
+
+/* The card form nearly fills the window, with a small margin all round, up to a size that holds
+   the largest card on large screens. It lays itself out, with its own title, so the modal has no
+   padding or header. */
+body:not(.is-phone) .tracecards-card-form-modal .modal {
+  width: calc(100vw - 56px);
+  height: calc(100vh - 56px);
+  max-width: 1200px;
+  max-height: 840px;
+}
+
+.tracecards-card-form-modal .modal {
+  padding: 0;
+  overflow: hidden;
+}
+
+.tracecards-card-form-modal .modal-header {
+  display: none;
+}
+
+/* Obsidian's close button, further from the corner than Obsidian puts it, which themes that round
+   modals a lot cut into. In the card form, it's centred in the height of the title bar and as far
+   from the right as the title is from the left. "body" outranks Obsidian's own placement. It's
+   .modal-header-button in Obsidian 1.14; .modal-close-button is the older name. */
+body
+  :is(.tracecards-card-modal, .tracecards-card-form-modal)
+  :is(.modal-header-button, .modal-close-button) {
+  top: var(--size-4-4);
+  inset-inline-end: var(--size-4-4);
+}
+
+body .tracecards-card-form-modal :is(.modal-header-button, .modal-close-button) {
+  top: 12px;
+}
+
+/* The note's scrollbar is near the modal's right edge, past the card face. */
+body:not(.is-phone) .tracecards-card-modal .modal {
+  padding-right: var(--size-4-2);
+}
+
+.tracecards-card-modal .modal-header {
+  display: none;
+}
+
+/* On phones the card fills the screen, with its own back arrow in place of Obsidian's close
+   button. With the keyboard up, it fills the room above it: Obsidian would centre it. */
+.is-phone .modal-container.tracecards-card-modal {
+  align-items: flex-start;
+}
+
+.is-phone .tracecards-card-modal .modal {
+  width: 100vw;
+  height: calc(100vh - var(--keyboard-height, 0px));
+  max-width: none;
+  max-height: none;
+  padding: var(--safe-area-inset-top, 0px) 0 0;
+  border-radius: 0;
+}
+
+.is-phone .tracecards-card-modal .modal-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+body.is-phone .tracecards-card-modal :is(.modal-header-button, .modal-close-button) {
+  display: none;
+}
+
+.tracecards-card-modal .modal-content {
+  min-height: 0;
+}
+
+/* The note's leaf. The text starts 20px below the tabs: no header, inline title or
+   properties, since the card face beside it shows the card's title and fields. The text keeps clear
+   of the face, which the note scrolls under. */
+.tracecards-card-modal .tracecards-note {
+  --file-margins: var(--size-4-5) calc(var(--tracecards-face-space) + var(--size-2-3))
+    var(--size-4-5) var(--size-2-3);
+}
+
+/* The modal gives the note its width, so a width that themes or snippets give notes in tabs, such
+   as a centred maximum, doesn't apply here. */
+.tracecards-card-modal .tracecards-note :is(.markdown-source-view, .markdown-preview-view) {
+  max-width: none;
+  margin: 0;
+}
+
+.tracecards-card-modal .tracecards-note .view-header,
+.tracecards-card-modal .tracecards-note .inline-title {
+  display: none;
+}
+
+/* Obsidian shows properties with `.markdown-source-view.is-live-preview.show-properties
+   .metadata-container:not(.mod-error)`, so this repeats its classes to win. */
+.tracecards-card-modal
+  .tracecards-note
+  .markdown-source-view.is-live-preview.show-properties
+  .metadata-container {
+  display: none;
+}
+
+/* Card form: the form fills the modal. Its parts scroll on their own. */
+.tracecards-card-form-modal .modal-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Text prompts, such as "New deck": a full-width field with its error below, and no label. */
+.tracecards-prompt .setting-item {
+  padding: 0;
+  border: none;
+}
+
+.tracecards-prompt .setting-item-info {
+  display: none;
+}
+
+/* Labelled fields, as in the bookmark dialog: the label above its field. */
+.tracecards-prompt .tracecards-prompt-field {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--size-4-1);
+}
+
+.tracecards-prompt .tracecards-prompt-field + .tracecards-prompt-field {
+  margin-top: var(--size-4-3);
+}
+
+.tracecards-prompt .tracecards-prompt-field .setting-item-info {
+  display: block;
+}
+
+.tracecards-prompt .setting-item-control {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Icon picker rows: the icon, then its name. */
+.tracecards-icon-suggestion {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-2);
+}
+
+/* Search rows: a card's cover, small, then its title over its deck's name; a deck's
+   icon, then its name. */
+.tracecards-search-result {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-3);
+}
+
+.tracecards-search-result .tracecards-cover {
+  width: 80px;
+  border-radius: var(--radius-s);
+  background: var(--background-modifier-border);
+}
+
+.tracecards-search-result .tracecards-cover-placeholder {
+  font-size: var(--font-ui-large);
+}
+
+.tracecards-search-new,
+.tracecards-search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.tracecards-search-result .suggestion-content {
+  min-width: 0;
+}
+
+/* The title stands out and the deck's name is small and at half opacity. Opacity
+   rather than a fainter colour, since some themes, such as Obsidian Nord, make their muted and
+   faint text almost as bright as normal text. Obsidian styles `.suggestion-note` only in its own
+   complex rows. */
+.tracecards-search-result .suggestion-title {
+  font-weight: var(--font-medium);
+}
+
+.tracecards-search-result .suggestion-note {
+  margin-top: var(--size-2-1);
+  color: var(--text-normal);
+  font-size: var(--font-ui-smaller);
+  opacity: 0.5;
+}
+
+/*
+ * The deck's name, in the middle of the Tracecards tab's header. It hides
+ * when the header is too narrow for it beside the tab's title and buttons. Only on desktop, where
+ * the name goes there: on phones the header floats over the view, fixed, which this would undo.
+ */
+body:not(.is-mobile) .workspace-leaf-content[data-type="tracecards-grid"] > .view-header {
+  position: relative;
+  container: tracecards-header / inline-size;
+}
+
+.tracecards-header-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  max-width: calc(100% - 400px);
+  transform: translate(-50%, -50%);
+}
+
+@container tracecards-header (width < 560px) {
+  .tracecards-header-title {
+    display: none;
+  }
+}
+
+/* On phones the screen lays itself out to the edges of the view, under Obsidian's header and over
+   its bar, so it can keep its buttons above the bar. */
+.is-phone .workspace-leaf-content[data-type="tracecards-grid"] > .view-content {
+  padding: 0;
+}
+
+/* A phone held sideways shows the lists either way (see `PhoneScreen`), so the switch to them goes. */
+@media (orientation: landscape) {
+  .is-phone .workspace-leaf-content[data-type="tracecards-grid"] .tracecards-view-switch {
+    display: none;
+  }
+}
+
+/* A sheet, such as the one of decks, at the bottom of a phone's screen, as Obsidian's own
+   confirmations are there. */
+.is-phone .modal-container.tracecards-sheet {
+  align-items: flex-end;
+}
+
+.is-phone .tracecards-sheet .modal {
+  --modal-radius: var(--touch-radius-s) var(--touch-radius-s) 0 0;
+  max-height: 85vh;
+  margin-top: auto;
+  padding-bottom: calc(var(--safe-area-inset-bottom, 0px) + var(--size-4-4));
+}
+
+/*
+ * A card in a canvas: its face fills the node in a card's shape, whatever size the node is
+ * given. Canvas draws the node's frame, so the face has no shadow of its own.
+ */
+.tracecards-canvas-card {
+  container-type: size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* The face shows the card's title, so the file name Canvas puts above each file node isn't. */
+.canvas-node:has(.tracecards-canvas-card) > .canvas-node-label {
+  display: none;
+}
+
+.tracecards-canvas-card .tracecards-card-face {
+  --tracecards-card-width: min(100cqw, 100cqh * var(--tracecards-card-ratio));
+}
+
+.tracecards-canvas-card-missing {
+  margin: 0;
+  padding: var(--size-4-4);
+  color: var(--text-muted);
+}

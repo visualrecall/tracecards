@@ -1,9 +1,12 @@
 import { type CoverCrop, migrate, type Migration, parseCrop, type Saved } from "@tracecards/core";
 import {
+  DEFAULT_TITLE_CASE,
   FACE_THEMES,
   type FaceTheme,
   GAMECRAFTER_KEY_PAGE,
   PIXABAY_KEY_PAGE,
+  TITLE_CASES,
+  type TitleCase,
 } from "@tracecards/ui";
 import { type App, normalizePath, PluginSettingTab, type SettingDefinitionItem } from "obsidian";
 import type TracecardsPlugin from "./main";
@@ -34,6 +37,11 @@ export interface Settings {
   /** The most cards in a row in the grid view. A narrow tab fits fewer. */
   gridColumns: number;
   /**
+   * How cards show their titles: in title case, or as typed. There's no setting for it on the
+   * settings tab yet; it's here so one can be added without changing what's saved.
+   */
+  titleCase: TitleCase;
+  /**
    * The name of the secret, in Obsidian's secret storage, that holds the Pixabay API key, or ""
    * for none. The key itself stays on the device; only its name is in the synced settings.
    */
@@ -57,6 +65,7 @@ export const DEFAULT_SETTINGS: Settings = {
   settingsVersion: SETTINGS_VERSION,
   folder: "Tracecards",
   gridColumns: 5,
+  titleCase: DEFAULT_TITLE_CASE,
   pixabayKey: "",
   gameCrafterPublicKey: "",
   gameCrafterPrivateKey: "",
@@ -80,6 +89,7 @@ export function parseSettings(data: unknown): Settings {
     settingsVersion: version,
     folder: isVaultRoot(folder) ? DEFAULT_SETTINGS.folder : folder,
     gridColumns: gridColumns(saved.gridColumns),
+    titleCase: TITLE_CASES.find((each) => each === saved.titleCase) ?? DEFAULT_TITLE_CASE,
     pixabayKey: typeof saved.pixabayKey === "string" ? saved.pixabayKey : "",
     gameCrafterPublicKey:
       typeof saved.gameCrafterPublicKey === "string" ? saved.gameCrafterPublicKey.trim() : "",

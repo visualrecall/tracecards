@@ -16,6 +16,7 @@ import { ChooseImage, CoverInput } from "./CoverInput";
 import { type CoverEdit, useHost } from "./host";
 import { Icon } from "./Icon";
 import { ICONS } from "./icons";
+import { shownTitle } from "./titleCase";
 import { useCoverDraft } from "./useCoverDraft";
 import { useEditInPlace } from "./useEditInPlace";
 
@@ -46,6 +47,7 @@ export function EditableFace({ card, decks }: { card: Card; decks: readonly Deck
           <EditableText
             card={card}
             value={card.title}
+            shown={shownTitle(card.title, host.titleCase())}
             className="tracecards-card-title"
             label="Title"
             maxLength={MAX_TITLE}
@@ -212,6 +214,11 @@ interface EditableTextProps {
   card: Card;
   /** The card's text: its title or description. */
   value: string;
+  /**
+   * The text as the face shows it, such as the title in title case, when it isn't `value`. It has
+   * as many characters as `value`, so a click lands the caret in the same place in the field.
+   */
+  shown?: string;
   /** The face's class for this text, which its field has too, so editing it moves nothing. */
   className: string;
   label: string;
@@ -231,7 +238,7 @@ interface EditableTextProps {
  * where the click was. Hovering highlights it. Enter (Cmd or Ctrl+Enter where Enter adds a line)
  * or clicking away saves; Esc leaves it as it was.
  */
-function EditableText({ card, value, placeholder, write, ...field }: EditableTextProps) {
+function EditableText({ card, value, shown, placeholder, write, ...field }: EditableTextProps) {
   const edit = useEditInPlace();
   const [caret, setCaret] = useState(0);
 
@@ -268,7 +275,7 @@ function EditableText({ card, value, placeholder, write, ...field }: EditableTex
         start(value.length);
       }}
     >
-      {value || <span className="tracecards-face-placeholder">{placeholder}</span>}
+      {(shown ?? value) || <span className="tracecards-face-placeholder">{placeholder}</span>}
     </div>
   );
 }

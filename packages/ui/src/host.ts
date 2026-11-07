@@ -1,6 +1,7 @@
 import type { BookmarkFields, Card, CoverCrop, Deck } from "@tracecards/core";
 import { createContext, type ReactNode, use } from "react";
 import type { CoverImage } from "./coverImage";
+import type { TitleCase } from "./titleCase";
 
 /**
  * What the screens need from the app they run in. The Obsidian plugin implements it with
@@ -44,6 +45,8 @@ export interface Host {
   videoTitle: (url: string) => Promise<string | null>;
   /** The Pixabay API key set on this device, or null when there's none. */
   pixabayKey: () => string | null;
+  /** How cards show their titles. */
+  titleCase: () => TitleCase;
   /** Opens Tracecards' settings, where the Pixabay key is set. */
   openSettings: () => void;
   /**

@@ -20,6 +20,7 @@ import { type Host, useHost } from "./host";
 import { Icon } from "./Icon";
 import { ICONS } from "./icons";
 import { cardAt, cardsLabel, type PhoneView } from "./phone";
+import { shownTitle } from "./titleCase";
 
 /** What the host keeps for the phone screen, so it survives restarts, and how it changes it. */
 export interface PhoneOptions {
@@ -449,7 +450,9 @@ function DeckCards({ decks, deck, onLeave, reveal, onRevealed, onNewCard }: Deck
               onContextMenu={(event) => showCardMenu(host, decks, card, event)}
             >
               <Cover card={card} />
-              <span className="tracecards-phone-row-title">{card.title}</span>
+              <span className="tracecards-phone-row-title">
+                {shownTitle(card.title, host.titleCase())}
+              </span>
             </li>
           ))}
         </ul>

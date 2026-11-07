@@ -46,3 +46,4 @@ export { PIXABAY_KEY_PAGE } from "./pixabay";
 export { type Store, ValueStore, type VaultSnapshot } from "./store";
 export { GAMECRAFTER_KEY_PAGE } from "./gamecrafter";
 export { PrintDialog } from "./PrintDialog";
+export { DEFAULT_TITLE_CASE, TITLE_CASES, type TitleCase } from "./titleCase";

@@ -13,6 +13,7 @@ import { EditableFace } from "./EditableFace";
 import { Icon } from "./Icon";
 import { ICONS } from "./icons";
 import type { Store, VaultSnapshot } from "./store";
+import { useShownTitle } from "./titleCase";
 
 type Tab = "note" | "bookmarks";
 
@@ -55,6 +56,7 @@ export function CardScreen({
   const { vault } = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const cardPath = useSyncExternalStore(path.subscribe, path.getSnapshot);
   const card = vault && cardPath !== null ? findCard(vault.decks, cardPath) : undefined;
+  const title = useShownTitle(card?.title ?? "");
   const [tab, setTab] = useState<Tab>("note");
   const id = useId();
 
@@ -116,7 +118,7 @@ export function CardScreen({
           >
             <Icon name={ICONS.leaveDeck} />
           </button>
-          <span className="tracecards-card-screen-title">{card?.title}</span>
+          <span className="tracecards-card-screen-title">{title}</span>
         </div>
       )}
       <div className="tracecards-card-screen-main">

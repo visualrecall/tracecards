@@ -21,6 +21,7 @@ import type {
   NewCard,
   Sheet,
   Submenu,
+  TitleCase,
 } from "@tracecards/ui";
 import {
   type App,
@@ -139,6 +140,8 @@ export class ObsidianHost implements Host {
 
   /** The secret the Pixabay setting names, from Obsidian's secret storage on this device. */
   readonly pixabayKey = (): string | null => readSecret(this.app, this.plugin.settings.pixabayKey);
+
+  readonly titleCase = (): TitleCase => this.plugin.settings.titleCase;
 
   readonly openSettings = (): void => {
     this.plugin.openSettings();

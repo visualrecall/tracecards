@@ -1,6 +1,7 @@
 import type { Card } from "@tracecards/core";
 import type { ReactNode } from "react";
 import { Cover } from "./Cover";
+import { useShownTitle } from "./titleCase";
 
 interface CardFaceProps {
   card: Card;
@@ -15,13 +16,14 @@ interface CardFaceProps {
  * comes from `--tracecards-card-width`, and everything in it scales with that width.
  */
 export function CardFace({ card, cover, text }: CardFaceProps) {
+  const title = useShownTitle(card.title);
   return (
     <div className="tracecards-card-face">
       {cover ?? <Cover card={card} />}
       <div className="tracecards-card-text">
         {text ?? (
           <>
-            <div className="tracecards-card-title">{card.title}</div>
+            <div className="tracecards-card-title">{title}</div>
             {card.description && (
               <div className="tracecards-card-description">{card.description}</div>
             )}

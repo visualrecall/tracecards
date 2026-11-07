@@ -36,6 +36,7 @@ import {
   PAPERS,
   sheetCount,
 } from "./printSheet";
+import { shownTitle } from "./titleCase";
 import { useFacePreviews } from "./useFacePreviews";
 
 type Method = "pdf" | "gamecrafter";
@@ -110,7 +111,12 @@ export function PrintDialog({ deck, onClose }: { deck: Deck; onClose: () => void
   // Set when the dialog closes, so work still going on stops and removes what it made.
   const closed = useRef(false);
 
-  const cards = deck.cards;
+  // The cards with their titles as cards show them, which is how they print.
+  const titleCase = host.titleCase();
+  const cards = useMemo(
+    () => deck.cards.map((card) => ({ ...card, title: shownTitle(card.title, titleCase) })),
+    [deck.cards, titleCase],
+  );
   // The cards shown as they'll print: a few for the fronts, and a sheet's worth for the PDF's.
   const shown = useMemo(
     () => cards.slice(0, method === "pdf" ? CARDS_PER_PAGE : SAMPLE),

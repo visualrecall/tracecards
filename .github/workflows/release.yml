@@ -59,7 +59,10 @@ jobs:
         with:
           name: release
 
+      # GitHub attests only in public repos on its free plan, so a release made while the repo is
+      # private goes without.
       - name: Attest build provenance
+        if: ${{ !github.event.repository.private }}
         uses: actions/attest@v4
         with:
           subject-path: |

@@ -250,6 +250,7 @@ describe("coverFileName", () => {
     ["ignores letter case", ["IDEAS.WEBP", "ideas 1.webp"], "Ideas 2.webp"],
     ["only counts the same extension", ["Ideas.jpg"], "Ideas.webp"],
   ])("%s", (_, existing, name) => {
-    expect(coverFileName("Ideas", "webp", existing)).toBe(name);
+    const taken = new Set(existing.map((each) => each.toLowerCase()));
+    expect(coverFileName("Ideas", "webp", (each) => taken.has(each.toLowerCase()))).toBe(name);
   });
 });

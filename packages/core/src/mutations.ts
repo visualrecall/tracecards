@@ -169,17 +169,16 @@ export function newCardFile(card: NewCardFields): string {
 
 /**
  * The file name for a card's cover image: the card's title with the image's extension, with ` 1`,
- * ` 2` and so on added while a file in `existing` has that name. Letter case is ignored, as it is
- * by file systems on macOS and Windows.
+ * ` 2` and so on added while `taken` says a file already has that name. It should ignore letter
+ * case, as file systems on macOS and Windows do.
  */
 export function coverFileName(
   title: string,
   extension: string,
-  existing: Iterable<string>,
+  taken: (name: string) => boolean,
 ): string {
-  const taken = new Set(Array.from(existing, (name) => name.toLowerCase()));
   let name = `${title}.${extension}`;
-  for (let number = 1; taken.has(name.toLowerCase()); number++) {
+  for (let number = 1; taken(name); number++) {
     name = `${title} ${number}.${extension}`;
   }
   return name;

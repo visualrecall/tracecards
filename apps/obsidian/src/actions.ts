@@ -150,12 +150,21 @@ export class VaultActions {
   /**
    * Saves a cover image in the attachments folder, creating the folder if needed. It's named
    * after the card, and unlike any file anywhere in the vault, so that its bare name links to it.
+   * A name is taken when a link of just that name already leads to a file, as Obsidian finds
+   * links, or when the folder has a file of that name in any letter case, which macOS and Windows
+   * take for the same file. Neither needs a list of the vault's files.
    */
   private async saveCoverImage(image: CoverImage, title: string): Promise<TFile> {
     const folder = this.store.vaultPath(ATTACHMENTS);
-    if (!this.app.vault.getFolderByPath(folder)) await this.app.vault.createFolder(folder);
-    const existing = this.app.vault.getFiles().map((file) => file.name);
-    const name = coverFileName(title, image.extension, existing);
+    const attachments =
+      this.app.vault.getFolderByPath(folder) ?? (await this.app.vault.createFolder(folder));
+    const name = coverFileName(title, image.extension, (candidate) => {
+      const lower = candidate.toLowerCase();
+      return (
+        this.app.metadataCache.getFirstLinkpathDest(candidate, "") !== null ||
+        attachments.children.some((child) => child.name.toLowerCase() === lower)
+      );
+    });
     return this.app.vault.createBinary(`${folder}/${name}`, await image.data.arrayBuffer());
   }
 

@@ -114,6 +114,9 @@ const context = await esbuild.context({
   format: "cjs",
   // Same target as Obsidian's sample plugin, for older mobile webviews.
   target: "es2018",
+  // import() becomes Node's require, which reaches Node's modules on the desktop for certain:
+  // Obsidian loads plugins as CommonJS, and a real import() there may not find them.
+  supported: { "dynamic-import": false },
   jsx: "automatic",
   // The card face's font files go inside styles.css, which Obsidian installs by itself.
   loader: { ".woff2": "dataurl" },

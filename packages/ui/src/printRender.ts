@@ -302,12 +302,14 @@ export function layoutFace(
 /**
  * Loads the face's fonts for these texts. A canvas measures and draws with a font only once it's
  * loaded, where the screen waits for it by itself, and the styles only load a font once it's used.
+ * They're loaded in the main window's document even when printing from a pop-out window, since
+ * that's whose fonts the canvas uses: the code runs in the main window.
  */
 async function loadFaceFonts(...texts: (string | undefined)[]): Promise<void> {
   const text = texts.join("");
   await Promise.all(
     Object.values(FACE_WEIGHTS).map((weight) =>
-      document.fonts.load(`${weight} 16px ${FACE_FONT}`, text),
+      window.document.fonts.load(`${weight} 16px ${FACE_FONT}`, text),
     ),
   );
 }

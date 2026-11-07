@@ -42,7 +42,8 @@ interface ElectronWindow {
 /** Writes a file anywhere on the device, which only the desktop app can do. */
 async function writeOutsideVault(path: string, data: Uint8Array): Promise<void> {
   if (!Platform.isDesktop) throw new Error("Only the desktop app can save outside the vault.");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, no-undef -- Plugins are loaded as CommonJS, so Node's own require reaches Node's modules for certain, which import() in Obsidian's window may not.
+  // Plugins are loaded as CommonJS, so Node's own require reaches Node's modules for certain,
+  // which import() in Obsidian's window may not.
   const { writeFile } = require("node:fs/promises");
   await writeFile(path, data);
 }

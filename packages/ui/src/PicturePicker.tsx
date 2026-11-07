@@ -180,8 +180,8 @@ function PixabayResults({ titleSearch, picked, onPickImage, searchField }: Pictu
   }
 
   const focusImage = (index: number) => {
-    const tile = grid.current?.children[index];
-    if (!(tile instanceof HTMLElement)) return;
+    const tile = grid.current?.querySelectorAll<HTMLElement>(":scope > *")[index];
+    if (!tile) return;
     tile.focus({ preventScroll: true });
     tile.scrollIntoView({ block: "nearest" });
   };

@@ -53,7 +53,8 @@ export default class TracecardsPlugin extends Plugin {
       this.app.vault.on("rename", (file, oldPath) => this.recent.rename(oldPath, file.path)),
     );
 
-    this.styleWindow(document);
+    // The main window now, and each pop-out window as it opens.
+    this.styleWindow(window.document);
     this.registerEvent(this.app.workspace.on("window-open", (win) => this.styleWindow(win.doc)));
     this.register(() => {
       const unset = Object.fromEntries(
@@ -234,7 +235,7 @@ export default class TracecardsPlugin extends Plugin {
 
   /** The main window's document and those of any pop-out windows. */
   private windowDocuments(): Set<Document> {
-    const docs = new Set<Document>([document]);
+    const docs = new Set<Document>([window.document]);
     this.app.workspace.iterateAllLeaves((leaf) => docs.add(leaf.view.containerEl.doc));
     return docs;
   }

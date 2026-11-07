@@ -3,7 +3,7 @@
   "name": "Tracecards",
   "version": "0.6.0",
   "minAppVersion": "1.13.2",
-  "description": "Organize ideas as visual cards with covers, grouped into decks and stored as plain markdown in your vault.",
+  "description": "Organize ideas as visual cards with covers, grouped into decks and stored as plain Markdown in your vault.",
   "author": "VisualRecall",
   "isDesktopOnly": false
 }

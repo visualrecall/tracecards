@@ -5,10 +5,10 @@
   </picture>
 </p>
 
-<h3 align="center">Instantly recall your notes</h3>
+<h3 align="center">Instantly recall ideas</h3>
 
 <p align="center">
-  A private, visual way to keep your atomic notes in Obsidian: cards with covers, grouped into decks, stored as plain markdown in your vault.
+  A private, visual way to keep your atomic notes in Obsidian: cards with covers, grouped into decks, stored as plain Markdown in your vault.
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 ## Features
 
-- **Cards with covers.** Each card has a cover image, a title, a short description and a markdown note. Pick a cover from Pixabay's free images or use your own, then move and zoom it right on the card.
+- **Cards with covers.** Each card has a cover image, a title, a short description and a Markdown note. Pick a cover from Pixabay's free images or use your own, then move and zoom it right on the card.
 - **Decks and the deck pad.** Group cards into decks and keep the ones you use on the deck pad, with six cards around it at a time. Switch to the grid view to see every card in a deck. On a phone, cards show one at a time, with a button to change deck, or as lists of decks and cards.
 - **Notes in Obsidian's own editor.** Opening a card shows its note beside the card face, with your theme, vim mode and plugins. A link to another card opens it in place, and Back returns.
 - **Bookmarks.** Links and YouTube videos on a card, with their titles and thumbnails.
@@ -38,7 +38,7 @@
 - **Canvas.** Put cards on Obsidian Canvas, where they show their face and stay up to date.
 - **Printing.** Print a deck at home as a PDF, or order real cards from The Game Crafter in your own account.
 - **Keyboard-first.** Everything works without a mouse.
-- **Plain files.** A deck is a folder and a card is a markdown file with YAML frontmatter, so Obsidian, any text editor or git can open them. Whatever syncs your vault syncs your cards.
+- **Plain files.** A deck is a folder and a card is a Markdown file with YAML frontmatter, so Obsidian, any text editor or git can open them. Whatever syncs your vault syncs your cards.
 
 ## Installation
 
@@ -72,7 +72,7 @@ Every key, setting and gesture is in the [guide](apps/obsidian/README.md#using-i
 
 ## How your cards are stored
 
-A Tracecards folder holds a subfolder per deck and a markdown file per card:
+A Tracecards folder holds a subfolder per deck and a Markdown file per card:
 
 ```
 Tracecards/
@@ -121,6 +121,12 @@ The plugin works offline, needs no account and has no telemetry. Bookmarks load 
 - **Printing**, once you've added your own Game Crafter API key and pressed "Print…" on a deck: Tracecards sends your cards' images and your key to The Game Crafter (`https://www.thegamecrafter.com`). It creates a game and a cart in your account and opens the cart in your browser, where you add your address, choose shipping and pay. Tracecards never pays for anything and never sees your address. Before each print it deletes the unpaid carts, and their games, left by your earlier prints with Tracecards; it never touches paid orders or anything else in your account. Printing at home as a PDF uses no network.
 
 Your Pixabay key and Game Crafter private key are kept in Obsidian's secret storage on your device and aren't synced. Nothing else is sent anywhere.
+
+## Accounts, payments and files outside your vault
+
+- **Accounts:** Tracecards needs none. Image search needs a free Pixabay account, for its API key, and ordering printed cards needs an account with The Game Crafter.
+- **Payments:** Tracecards is free. Printed cards are paid for at The Game Crafter, in your browser, if you order them. Printing at home as a PDF is free.
+- **Files outside your vault:** on desktop, "Save PDF" writes the PDF wherever you choose in the save dialog, which can be outside your vault, so you can keep and print it from anywhere. On phones and tablets, the PDF goes in your vault, where attachments go. Tracecards reads and writes nothing else outside your vault.
 
 ## Development
 

@@ -1,6 +1,6 @@
 # Contributing to Tracecards
 
-Thanks for helping. Bug reports, ideas and pull requests are all welcome.
+Thanks for helping. Bug reports and ideas are welcome as [issues](https://github.com/visualrecall/tracecards/issues). We aren't taking pull requests yet, while Tracecards is young and changing fast: open an issue first, and if a change fits, we'll talk about how to bring it in.
 
 ## Setting up
 

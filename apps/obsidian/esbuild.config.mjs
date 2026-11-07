@@ -64,6 +64,46 @@ const bundledLicenses = {
   },
 };
 
+/**
+ * Takes out of React DOM the code that makes `<script>` elements: for `ReactDOM.preinit` and
+ * `preinitModule`, which load code from a URL, and for a `<script>` written in JSX. Tracecards uses
+ * none of them, and a plugin able to load code at runtime is what Obsidian's review turns down.
+ * Each now throws instead, so it would say so if it were ever reached. The build stops if React
+ * DOM no longer has exactly these, so an update can't bring them back unnoticed.
+ */
+const noScriptLoading = {
+  name: "no-script-loading",
+  setup(build) {
+    const refuse = `(() => { throw new Error("Tracecards doesn't load scripts."); })()`;
+    const removed = [
+      // ReactDOM.preinit, preinitModule and <script async src>.
+      { code: /\.createElement\(\s*"script"\s*\)/g, places: 3, by: `.createElement(${refuse})` },
+      // A <script> in JSX, made through innerHTML so it doesn't run.
+      {
+        code: /\.innerHTML\s*=\s*"<script>\\x3c\/script>"/g,
+        places: 1,
+        by: `.innerHTML = ${refuse}`,
+      },
+    ];
+    build.onLoad(
+      { filter: /react-dom[\\/]cjs[\\/]react-dom-client\.\w+\.js$/ },
+      async ({ path }) => {
+        let source = await readFile(path, "utf8");
+        for (const { code, places, by } of removed) {
+          const found = source.match(code)?.length ?? 0;
+          if (found !== places) {
+            throw new Error(
+              `${path} has ${code} in ${found} places, not ${places}: check what changed`,
+            );
+          }
+          source = source.replace(code, by);
+        }
+        return { contents: source, loader: "js" };
+      },
+    );
+  },
+};
+
 const context = await esbuild.context({
   entryPoints: {
     main: join(here, "src/main.ts"),
@@ -94,7 +134,7 @@ const context = await esbuild.context({
   banner: { js: BANNER, css: BANNER },
   logLevel: "info",
   metafile: true,
-  plugins: [copyManifest, bundledLicenses],
+  plugins: [copyManifest, bundledLicenses, noScriptLoading],
 });
 
 if (watch) {

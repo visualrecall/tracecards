@@ -8,7 +8,7 @@
 <h3 align="center">Instantly recall ideas</h3>
 
 <p align="center">
-  A private, visual way to keep your atomic notes in Obsidian: cards with covers, grouped into decks, stored as plain Markdown in your vault.
+  A private, visual way to keep your notes and mental models in Obsidian, stored as plain Markdown in your vault.
 </p>
 
 <p align="center">
@@ -30,15 +30,19 @@
 
 ## Features
 
-- **Cards with covers.** Each card has a cover image, a title, a short description and a Markdown note. Pick a cover from Pixabay's free images or use your own, then move and zoom it right on the card.
-- **Decks and the deck pad.** Group cards into decks and keep the ones you use on the deck pad, with six cards around it at a time. Switch to the grid view to see every card in a deck. On a phone, cards show one at a time, with a button to change deck, or as lists of decks and cards.
-- **Notes in Obsidian's own editor.** Opening a card shows its note beside the card face, with your theme, vim mode and plugins. A link to another card opens it in place, and Back returns.
-- **Bookmarks.** Links and YouTube videos on a card, with their titles and thumbnails.
-- **Search.** Find cards by title and decks by name, fuzzily.
-- **Canvas.** Put cards on Obsidian Canvas, where they show their face and stay up to date.
-- **Printing.** Print a deck at home as a PDF, or order real cards from The Game Crafter in your own account.
+- **Cards with covers.** A cover image, a title, a short description and a Markdown note. Pick a cover from Pixabay's free images or use your own, and crop it right on the card.
+- **Decks and the deck pad.** Group cards into decks, keep the ones you use on the deck pad, or see a whole deck in the grid.
+- **Notes in Obsidian's own editor.** A card's note opens beside it, with your theme and plugins.
+- **Bookmarks.** Links and YouTube videos on a card.
+- **Search.** Find cards and decks by name, fuzzily.
+- **Canvas.** Put cards on Obsidian Canvas, where they stay up to date.
 - **Keyboard-first.** Everything works without a mouse.
-- **Plain files.** A deck is a folder and a card is a Markdown file with YAML frontmatter, so Obsidian, any text editor or git can open them. Whatever syncs your vault syncs your cards.
+- **Plain files.** A deck is a folder and a card is a Markdown file, so whatever syncs your vault syncs your cards.
+- **Printing.** Print a deck at home as a PDF, or order real cards from The Game Crafter.
+
+<p align="center">
+  <img src=".github/assets/printed-cards.webp" width="240" alt="A hand holding three printed cards, each with a cover picture, a title and a few lines." />
+</p>
 
 ## Installation
 
@@ -156,8 +160,4 @@ Dependencies point one way, `apps/obsidian → packages/ui → packages/core`, a
 
 ## License
 
-Copyright © 2026 VisualRecall. The Tracecards plugin for Obsidian is free software: you can use, change and share it under the [GNU Affero General Public License, version 3](LICENSE). If you share a changed version, or let people use one over a network, its source has to be available under the same license.
-
-The [vault format](spec/vault-format.md) and its test vaults in `spec/` are under the [Apache License 2.0](spec/LICENSE) instead, so any app, open or not, can read and write Tracecards vaults.
-
-If the plugin is useful to you, a star helps others find it.
+[AGPL-3.0](LICENSE). The [vault format](spec/vault-format.md) and its test vaults in `spec/` are under [Apache-2.0](spec/LICENSE), so any app can read and write Tracecards vaults.

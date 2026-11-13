@@ -21,9 +21,7 @@ export const ICONS = {
   cardView: "gallery-horizontal",
   /** On phones, the deck button's sign that it opens the sheet of decks. */
   deckSheet: "chevrons-up-down",
-  /** On phones, the previous and next card, and going back from a deck's cards to the decks. */
-  previous: "chevron-left",
-  next: "chevron-right",
+  /** On phones, going back from a deck's cards to the decks. */
   leaveDeck: "arrow-left",
   settings: "settings",
   search: "search",

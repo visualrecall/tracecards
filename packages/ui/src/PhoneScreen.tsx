@@ -47,9 +47,9 @@ interface PhoneScreenProps extends PhoneOptions {
 
 /**
  * The Tracecards tab on a phone, where the deck pad doesn't fit. One card at a time, swiped
- * sideways, with a row at the bottom: the previous card, the deck's button, which opens a sheet of
- * every deck, and the next card. Or, switched from the tab's header, lists: the decks, then the
- * cards of the one tapped, with a way back. A long press on a card or a deck shows its menu.
+ * sideways, with the deck's button at the bottom, which opens a sheet of every deck. Or, switched
+ * from the tab's header, lists: the decks, then the cards of the one tapped, with a way back. A
+ * long press on a card or a deck shows its menu.
  * Held sideways, the phone has too little height for a card at a size to read, so it shows the
  * lists, and one card at a time again, on the same card, once it's upright.
  */
@@ -111,7 +111,7 @@ interface CardRowProps extends Omit<PhoneScreenProps, keyof PhoneOptions> {
   places: Map<string, string>;
 }
 
-/** A deck's cards in a row that scrolls sideways, a card at a time, and the buttons below. */
+/** A deck's cards in a row that scrolls sideways, a card at a time, and the deck's button below. */
 function CardRow({
   decks,
   deck,
@@ -244,15 +244,6 @@ function CardRow({
       <div className="tracecards-phone-controls">
         <button
           type="button"
-          className="tracecards-phone-step"
-          aria-label="Previous card"
-          disabled={index <= 0}
-          onClick={() => go(index - 1)}
-        >
-          <Icon name={ICONS.previous} />
-        </button>
-        <button
-          type="button"
           className="tracecards-deck-button"
           aria-haspopup="dialog"
           onClick={openSheet}
@@ -266,15 +257,6 @@ function CardRow({
             </span>
           )}
           <Icon name={ICONS.deckSheet} />
-        </button>
-        <button
-          type="button"
-          className="tracecards-phone-step"
-          aria-label="Next card"
-          disabled={index >= cards.length - 1}
-          onClick={() => go(index + 1)}
-        >
-          <Icon name={ICONS.next} />
         </button>
       </div>
     </div>

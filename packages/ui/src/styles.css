@@ -2650,14 +2650,14 @@ button.tracecards-print-change:hover {
 }
 
 /*
- * Phones, where the deck pad doesn't fit (`PhoneScreen`): one card at a time, with a row of
- * buttons at the bottom, or lists of the decks and of a deck's cards. Obsidian's own bar floats
+ * Phones, where the deck pad doesn't fit (`PhoneScreen`): one card at a time, with the deck's
+ * button at the bottom, or lists of the decks and of a deck's cards. Obsidian's own bar floats
  * over the bottom of the view, and --view-bottom-spacing is the room it takes there (0 when it
  * doesn't float), so what's at the bottom stays above it.
  */
 
 .tracecards-phone {
-  /* The row of buttons at the bottom, and the room it takes with Obsidian's bar. */
+  /* The deck's button at the bottom, and the room it takes with Obsidian's bar. */
   --tracecards-phone-button: 44px;
   --tracecards-phone-controls: calc(
     var(--view-bottom-spacing, 0px) + var(--tracecards-phone-button) + 2 * var(--size-4-3)
@@ -2671,7 +2671,7 @@ button.tracecards-print-change:hover {
   height: 100%;
 }
 
-/* The card is as large as the room above the buttons allows, leaving a little of the cards either
+/* The card is as large as the room above the button allows, leaving a little of the cards either
    side showing, and no wider than 320px, where its text would get large. */
 .tracecards-phone-stage {
   --tracecards-card-width: min(
@@ -2734,7 +2734,7 @@ button.tracecards-print-change:hover {
   text-align: center;
 }
 
-/* The previous card, the deck's button and the next card, above Obsidian's bar. */
+/* The deck's button, above Obsidian's bar. */
 .tracecards-phone-controls {
   position: absolute;
   right: 0;
@@ -2743,26 +2743,10 @@ button.tracecards-print-change:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--size-4-3);
   padding: 0 var(--size-4-4);
 }
 
-/* Selectors are doubled up to win over Obsidian's own button styles. */
-.tracecards-phone .tracecards-phone-step {
-  flex: none;
-  width: var(--tracecards-phone-button);
-  height: var(--tracecards-phone-button);
-  padding: 0;
-  border-radius: 50%;
-  background: var(--background-modifier-hover);
-  box-shadow: none;
-  color: var(--text-muted);
-}
-
-.tracecards-phone .tracecards-phone-step:disabled {
-  opacity: 0.35;
-}
-
+/* The selector is doubled up to win over Obsidian's own button styles. */
 .tracecards-phone .tracecards-deck-button {
   display: inline-flex;
   align-items: center;
@@ -2797,16 +2781,10 @@ button.tracecards-print-change:hover {
   font-weight: var(--font-normal);
 }
 
-/* On narrow phones the row tightens, so the deck's name has room. */
+/* On narrow phones the button tightens, so the deck's name has room. */
 @container tracecards-phone (width < 360px) {
   .tracecards-phone-controls {
-    gap: var(--size-4-2);
     padding: 0 var(--size-4-2);
-  }
-
-  .tracecards-phone .tracecards-phone-step {
-    width: 36px;
-    height: 36px;
   }
 
   .tracecards-phone .tracecards-deck-button {

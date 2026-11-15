@@ -8,9 +8,7 @@ export const ICONS = {
    * Lucide icon but the Tracecards mark, which the Obsidian plugin adds under this name.
    */
   tracecards: "tracecards",
-  /** The Decks panel in the sidebar. */
-  decksPanel: "library",
-  /** A deck that hasn't chosen an icon. */
+  /** A deck that hasn't chosen an icon, and the Decks panel in the sidebar. */
   deck: "layers",
 
   /** The tab header's buttons that switch to the grid view and to the pad view. */

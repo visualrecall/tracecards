@@ -32,7 +32,7 @@ export class DecksView extends ItemView {
   }
 
   override getIcon(): string {
-    return ICONS.decksPanel;
+    return ICONS.deck;
   }
 
   override async onOpen(): Promise<void> {

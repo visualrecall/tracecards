@@ -17,8 +17,6 @@ export const ICONS = {
   /** On phones, the tab header's buttons that switch to the lists and to one card at a time. */
   listView: "layout-list",
   cardView: "gallery-horizontal",
-  /** On phones, the deck button's sign that it opens the sheet of decks. */
-  deckSheet: "chevrons-up-down",
   /** On phones, going back from a deck's cards to the decks. */
   leaveDeck: "arrow-left",
   settings: "settings",

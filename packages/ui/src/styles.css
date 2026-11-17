@@ -2773,14 +2773,6 @@ button.tracecards-print-change:hover {
   white-space: nowrap;
 }
 
-.tracecards-deck-button-position {
-  flex: none;
-  color: var(--text-muted);
-  font-size: var(--font-ui-small);
-  font-variant-numeric: tabular-nums;
-  font-weight: var(--font-normal);
-}
-
 /* On narrow phones the button tightens, so the deck's name has room. */
 @container tracecards-phone (width < 360px) {
   .tracecards-phone-controls {

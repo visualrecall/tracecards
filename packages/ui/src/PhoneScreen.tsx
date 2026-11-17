@@ -251,12 +251,6 @@ function CardRow({
         >
           <Icon name={deck.icon ?? ICONS.deck} />
           <span className="tracecards-deck-button-name">{deck.name}</span>
-          {cards.length > 0 && (
-            <span className="tracecards-deck-button-position">
-              {Math.min(index, cards.length - 1) + 1}/{cards.length}
-            </span>
-          )}
-          <Icon name={ICONS.deckSheet} />
         </button>
       </div>
     </div>

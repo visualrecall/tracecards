@@ -19,6 +19,7 @@ import { prefersLessMotion } from "./DeckToken";
 import { type Host, useHost } from "./host";
 import { Icon } from "./Icon";
 import { ICONS } from "./icons";
+import { PageIndicator } from "./PageIndicator";
 import { cardAt, cardsLabel, type PhoneView } from "./phone";
 import { shownTitle } from "./titleCase";
 
@@ -47,7 +48,8 @@ interface PhoneScreenProps extends PhoneOptions {
 
 /**
  * The Tracecards tab on a phone, where the deck pad doesn't fit. One card at a time, swiped
- * sideways, with the deck's button at the bottom, which opens a sheet of every deck. Or, switched
+ * sideways, under the deck's name and over the pad's page bar, lying down, for where in the deck it
+ * is, with the deck's button at the bottom, which opens a sheet of every deck. Or, switched
  * from the tab's header, lists: the decks, then the cards of the one tapped, with a way back. A
  * long press on a card or a deck shows its menu.
  * Held sideways, the phone has too little height for a card at a size to read, so it shows the
@@ -111,7 +113,10 @@ interface CardRowProps extends Omit<PhoneScreenProps, keyof PhoneOptions> {
   places: Map<string, string>;
 }
 
-/** A deck's cards in a row that scrolls sideways, a card at a time, and the deck's button below. */
+/**
+ * A deck's cards in a row that scrolls sideways, a card at a time, under the deck's name, with the
+ * page bar and the deck's button below.
+ */
 function CardRow({
   decks,
   deck,
@@ -197,6 +202,12 @@ function CardRow({
 
   return (
     <div className="tracecards-phone">
+      <h2
+        className="tracecards-phone-title"
+        onContextMenu={(event) => showDeckMenu(host, decks, deck, event)}
+      >
+        {deck.name}
+      </h2>
       <div className="tracecards-phone-stage">
         {cards.length === 0 ? (
           <div className="tracecards-phone-empty">
@@ -240,6 +251,7 @@ function CardRow({
             ))}
           </ul>
         )}
+        <PageIndicator page={index} pages={cards.length} lying />
       </div>
       <div className="tracecards-phone-controls">
         <button

@@ -1194,6 +1194,33 @@
   transition: top 0.3s ease;
 }
 
+/* Lying under the card on a phone. */
+.tracecards-page-indicator.is-lying {
+  position: relative;
+  inset: auto;
+  flex-direction: row;
+  flex: none;
+  align-self: center;
+  width: 160px;
+  height: 4px;
+  margin: calc((var(--tracecards-phone-bar) - 4px) / 2) 0;
+  padding: 0 4px;
+}
+
+.tracecards-page-indicator.is-lying.is-thumb {
+  width: 152px;
+  margin: calc((var(--tracecards-phone-bar) - 4px) / 2) auto;
+  padding: 0;
+}
+
+.tracecards-page-indicator.is-lying.is-thumb > span {
+  top: 0;
+  right: auto;
+  width: auto;
+  height: 100%;
+  transition: left 0.3s ease;
+}
+
 .tracecards-deck-name {
   font-size: var(--font-ui-smaller);
   font-weight: var(--font-semibold);
@@ -2665,24 +2692,47 @@ button.tracecards-print-change:hover {
   /* How much of the cards either side of the middle one shows, and the gap to them. */
   --tracecards-phone-peek: 18px;
   --tracecards-phone-gap: 10px;
+  /* The deck's name at the top, and the room for the bar under the card. */
+  --tracecards-phone-title: 48px;
+  --tracecards-phone-bar: 26px;
   container: tracecards-phone / size;
   position: relative;
   box-sizing: border-box;
   height: 100%;
 }
 
-/* The card is as large as the room above the button allows, leaving a little of the cards either
-   side showing, and no wider than 320px, where its text would get large. */
+/* The deck's name, over the cards. */
+.tracecards-phone-title {
+  display: flex;
+  align-items: center;
+  height: var(--tracecards-phone-title);
+  margin: 0;
+  padding: 0 var(--size-4-5);
+  overflow: hidden;
+  color: var(--text-normal);
+  font-size: var(--h2-size);
+  font-weight: var(--font-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The card is as large as the room between the deck's name and the button allows, with the bar
+   under it, leaving a little of the cards either side showing, and no wider than 320px, where its
+   text would get large. */
 .tracecards-phone-stage {
   --tracecards-card-width: min(
     320px,
     100cqw - 2 * (var(--tracecards-phone-peek) + var(--tracecards-phone-gap)),
-    (100cqh - var(--tracecards-phone-controls) - 2 * var(--size-4-4)) * var(--tracecards-card-ratio)
+    (
+        100cqh - var(--tracecards-phone-title) - var(--tracecards-phone-controls) -
+          var(--tracecards-phone-bar) - 2 * var(--size-4-4)
+      ) *
+      var(--tracecards-card-ratio)
   );
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: calc(100% - var(--tracecards-phone-controls));
+  height: calc(100% - var(--tracecards-phone-title) - var(--tracecards-phone-controls));
 }
 
 .tracecards-phone-cards {

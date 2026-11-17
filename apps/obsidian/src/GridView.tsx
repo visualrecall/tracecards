@@ -36,16 +36,15 @@ const LAYOUT_BUTTON: Record<Layout, { icon: string; label: string }> = {
   grid: { icon: ICONS.padView, label: "Switch to pad view (R)" },
 };
 
-/** The same button on phones, which switches between one card at a time and the lists. */
+/** The same button on phones, which switches between one card at a time and the deck's list. */
 const PHONE_VIEW_BUTTON: Record<PhoneView, { icon: string; label: string }> = {
-  card: { icon: ICONS.listView, label: "Show the decks as lists" },
+  card: { icon: ICONS.listView, label: "Show the deck as a list" },
   list: { icon: ICONS.cardView, label: "Show one card at a time" },
 };
 
 /**
  * The Tracecards tab: mounts the React grid screen. Its view state keeps the selected deck, the
- * layout, and the page showing in each deck, and on phones, which of the phone's views shows and
- * the deck open in its lists.
+ * layout, and the page showing in each deck, and on phones, which of the phone's views shows.
  */
 export class GridView extends ItemView {
   private root: Root | null = null;
@@ -55,8 +54,6 @@ export class GridView extends ItemView {
   /** Phones get `PhoneScreen`, since the deck pad doesn't fit. */
   private readonly phone = Platform.isPhone;
   private phoneView: PhoneView = "card";
-  /** In the phone's lists, the deck whose cards are showing, or null for the decks. */
-  private listDeck: string | null = null;
   /** A card for the screen to turn to. Not saved. */
   private reveal: Reveal | null = null;
   /** In the middle of the tab's header, where the screen shows the deck's name. */
@@ -100,7 +97,6 @@ export class GridView extends ItemView {
       layout: this.layout,
       pages: this.pages,
       phoneView: this.phoneView,
-      listDeck: this.listDeck,
     };
   }
 
@@ -111,18 +107,11 @@ export class GridView extends ItemView {
         this.layout = state.layout;
       }
       if ("pages" in state) this.pages = validPages(state.pages);
-      const openDeck = this.listDeck;
+      // Saved state from before may also have `listDeck`, the deck open in the lists when they
+      // started at the decks. The list is always the selected deck's now, so it's left unread.
       if ("phoneView" in state && (state.phoneView === "card" || state.phoneView === "list")) {
         this.phoneView = state.phoneView;
       }
-      if ("listDeck" in state) {
-        this.listDeck = typeof state.listDeck === "string" ? state.listDeck : null;
-      } else if (this.phoneView === "list") {
-        // A deck chosen elsewhere, as in the Decks panel or search, shows its cards in the lists.
-        this.listDeck = this.deck;
-      }
-      // Going into a deck's cards from the decks is a step back undoes (see `openListDeck`).
-      if (openDeck === null && this.listDeck !== null) result.history = true;
       this.render();
     }
     await super.setState(state, result);
@@ -215,7 +204,6 @@ export class GridView extends ItemView {
     if (!isNew) focusDeckMode(this.contentEl);
     const reveal: Reveal = { path, isNew };
     this.deck = cardDeckName(path);
-    if (this.phoneView === "list") this.listDeck = this.deck;
     this.reveal = reveal;
     this.saveState();
     window.setTimeout(() => {
@@ -238,43 +226,11 @@ export class GridView extends ItemView {
     this.saveState();
   };
 
-  /** Switches the phone between one card at a time and the lists, which start at the decks. */
+  /** Switches the phone between one card at a time and the deck's list. */
   private switchPhoneView(): void {
     this.phoneView = this.phoneView === "card" ? "list" : "card";
-    // The step back to the decks goes with the deck's cards, so Android's back button doesn't
-    // bring the lists back later.
-    if (this.listDeck !== null) decksStep(this.leaf)?.backHistory.pop();
-    this.listDeck = null;
     this.saveState();
   }
-
-  /**
-   * Shows the deck's cards in the phone's lists, as a step in the tab's history, so that Android's
-   * back button goes back to the decks. Obsidian keeps history only for tabs meant for navigating,
-   * and opens notes in them, so the tab is one only while the step is recorded.
-   */
-  private readonly openListDeck = (name: string): void => {
-    this.navigation = true;
-    void this.leaf
-      .setViewState({
-        type: GRID_VIEW_TYPE,
-        state: { ...this.getState(), deck: name, listDeck: name },
-      })
-      .finally(() => {
-        this.navigation = false;
-      });
-  };
-
-  /** Goes back from a deck's cards to the decks, through the tab's history when it has the step. */
-  private readonly leaveListDeck = (): void => {
-    const history = decksStep(this.leaf);
-    if (history) {
-      void history.back();
-      return;
-    }
-    this.listDeck = null;
-    this.saveState();
-  };
 
   private readonly changePage = (deck: string, page: number): void => {
     this.pages = { ...this.pages, [deck]: page };
@@ -314,41 +270,12 @@ export class GridView extends ItemView {
             onCardDropChange={(drop) => this.plugin.cardDrop.set(drop)}
             deckDrop={this.plugin.deckDrop}
             titleSlot={this.titleSlot}
-            phone={
-              this.phone
-                ? {
-                    view: this.phoneView,
-                    listDeck: this.listDeck,
-                    onOpenDeck: this.openListDeck,
-                    onLeaveDeck: this.leaveListDeck,
-                  }
-                : undefined
-            }
+            phone={this.phone ? { view: this.phoneView } : undefined}
           />
         </HostContext>
       </StrictMode>,
     );
   }
-}
-
-/** A tab's history, which Obsidian's API leaves out: the steps back, and going back one. */
-interface TabHistory {
-  backHistory: { state?: { type?: string; state?: Record<string, unknown> } }[];
-  back(): Promise<void>;
-}
-
-/**
- * The tab's history, when its last step back is to before a deck's cards were shown in the
- * phone's lists, as `openListDeck` records it. Null otherwise, or when Obsidian keeps history
- * differently.
- */
-function decksStep(leaf: WorkspaceLeaf): TabHistory | null {
-  const history = (leaf as WorkspaceLeaf & { history?: Partial<TabHistory> }).history;
-  if (!Array.isArray(history?.backHistory) || typeof history.back !== "function") return null;
-  const step = history.backHistory[history.backHistory.length - 1]?.state;
-  const state = step?.state;
-  const toDecks = step?.type === GRID_VIEW_TYPE && state?.listDeck == null;
-  return toDecks ? (history as TabHistory) : null;
 }
 
 /** The pages from saved view state, keeping only whole, non-negative numbers. */

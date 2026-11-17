@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cardAt, cardsLabel } from "../src/phone";
+import { cardAt } from "../src/phone";
 
 describe("cardAt", () => {
   it("is the card nearest the middle", () => {
@@ -17,11 +17,5 @@ describe("cardAt", () => {
   it("is the first card when there are none, or before they're laid out", () => {
     expect(cardAt(100, 300, 0)).toBe(0);
     expect(cardAt(100, 0, 5)).toBe(0);
-  });
-});
-
-describe("cardsLabel", () => {
-  it("counts cards in words", () => {
-    expect([0, 1, 9].map(cardsLabel)).toEqual(["0 cards", "1 card", "9 cards"]);
   });
 });

@@ -1,6 +1,17 @@
 export type { Bookmark, Card, CardKind, CoverCrop, Deck, Vault } from "./model";
 export { PAD_SLOTS } from "./model";
 export { bookmarkHost, bookmarkName, bookmarkUrl, sameBookmark } from "./bookmarks";
+export {
+  conflictParts,
+  parseWaitingVersion,
+  resolveConflict,
+  sameWaitingVersion,
+  VERSIONS_FOLDER,
+  waitingVersionFile,
+  waitingVersionName,
+  waitingVersionOwner,
+} from "./conflicts";
+export type { ConflictChoice, ConflictPart, ConflictResult, WaitingVersion } from "./conflicts";
 export { fitCrop, parseCrop } from "./crop";
 export { newFile, parseFrontmatter, splitFrontmatter } from "./frontmatter";
 export { migrate } from "./migrate";

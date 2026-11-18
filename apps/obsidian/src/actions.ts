@@ -149,7 +149,8 @@ export class VaultActions {
 
   /**
    * Saves a cover image in the attachments folder, creating the folder if needed. It's named
-   * after the card, and unlike any file anywhere in the vault, so that its bare name links to it.
+   * after the card and the time it's saved (`coverFileName`), and unlike any file anywhere in the
+   * vault, so that its bare name links to it.
    * A name is taken when a link of just that name already leads to a file, as Obsidian finds
    * links, or when the folder has a file of that name in any letter case, which macOS and Windows
    * take for the same file. Neither needs a list of the vault's files.

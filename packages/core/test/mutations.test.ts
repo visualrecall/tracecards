@@ -244,13 +244,30 @@ describe("newCardFile", () => {
 });
 
 describe("coverFileName", () => {
+  // In local time, as the name is.
+  const now = new Date(2026, 10, 18, 14, 3, 12);
+
   it.each<[string, string[], string]>([
-    ["is the title when the name is free", ["Other.webp"], "Ideas.webp"],
-    ["numbers a taken name", ["Ideas.webp"], "Ideas 1.webp"],
-    ["ignores letter case", ["IDEAS.WEBP", "ideas 1.webp"], "Ideas 2.webp"],
-    ["only counts the same extension", ["Ideas.jpg"], "Ideas.webp"],
+    [
+      "is the title and the time when the name is free",
+      ["Other.webp"],
+      "Ideas 20261118-140312.webp",
+    ],
+    ["doesn't count a name of the title alone", ["Ideas.webp"], "Ideas 20261118-140312.webp"],
+    ["numbers a taken name", ["Ideas 20261118-140312.webp"], "Ideas 20261118-140312 1.webp"],
+    [
+      "ignores letter case",
+      ["IDEAS 20261118-140312.WEBP", "ideas 20261118-140312 1.webp"],
+      "Ideas 20261118-140312 2.webp",
+    ],
+    ["only counts the same extension", ["Ideas 20261118-140312.jpg"], "Ideas 20261118-140312.webp"],
   ])("%s", (_, existing, name) => {
     const taken = new Set(existing.map((each) => each.toLowerCase()));
-    expect(coverFileName("Ideas", "webp", (each) => taken.has(each.toLowerCase()))).toBe(name);
+    expect(coverFileName("Ideas", "webp", (each) => taken.has(each.toLowerCase()), now)).toBe(name);
+  });
+
+  it("pads each part of the time to its width", () => {
+    const early = new Date(2026, 0, 2, 3, 4, 5);
+    expect(coverFileName("Ideas", "webp", () => false, early)).toBe("Ideas 20260102-030405.webp");
   });
 });

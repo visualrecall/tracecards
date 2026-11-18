@@ -168,18 +168,30 @@ export function newCardFile(card: NewCardFields): string {
 }
 
 /**
- * The file name for a card's cover image: the card's title with the image's extension, with ` 1`,
- * ` 2` and so on added while `taken` says a file already has that name. It should ignore letter
- * case, as file systems on macOS and Windows do.
+ * The file name for a card's cover image: the card's title and the local date and time `now`, to
+ * the second, with the image's extension (`Ideas 20261118-140312.webp`). Two devices that save a
+ * cover for cards with the same title before they sync would otherwise pick the same name, and
+ * when the sync tool renames one of the files, a card shows the other's image. ` 1`, ` 2` and so
+ * on are added while `taken` says a file already has that name. It should ignore letter case, as
+ * file systems on macOS and Windows do.
  */
 export function coverFileName(
   title: string,
   extension: string,
   taken: (name: string) => boolean,
+  now: Date = new Date(),
 ): string {
-  let name = `${title}.${extension}`;
+  const base = `${title} ${fileTimestamp(now)}`;
+  let name = `${base}.${extension}`;
   for (let number = 1; taken(name); number++) {
-    name = `${title} ${number}.${extension}`;
+    name = `${base} ${number}.${extension}`;
   }
   return name;
+}
+
+/** The local date and time as `20261118-140312`, for a file name. */
+function fileTimestamp(date: Date): string {
+  const two = (value: number) => String(value).padStart(2, "0");
+  const day = `${date.getFullYear()}${two(date.getMonth() + 1)}${two(date.getDate())}`;
+  return `${day}-${two(date.getHours())}${two(date.getMinutes())}${two(date.getSeconds())}`;
 }

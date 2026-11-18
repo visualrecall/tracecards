@@ -46,8 +46,9 @@ export function PicturePicker(props: PicturePickerProps) {
           <button type="button" aria-pressed="true">
             Pixabay
           </button>
-          {/* Greyed out, and its hover text says why. */}
-          <button type="button" disabled title="Coming later: pictures made for the card by AI">
+          {/* Greyed out, and its hover text says why. aria-disabled rather than disabled: a
+              disabled button gets no hover, so its hover text never shows. It does nothing. */}
+          <button type="button" aria-disabled="true" title="Coming later">
             Generate
           </button>
         </div>

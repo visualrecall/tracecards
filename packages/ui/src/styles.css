@@ -1542,7 +1542,7 @@
   color: var(--text-normal);
 }
 
-.tracecards-segments button:disabled {
+.tracecards-segments button[aria-disabled="true"] {
   opacity: 0.6;
   cursor: default;
 }

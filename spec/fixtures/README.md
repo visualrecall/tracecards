@@ -53,3 +53,14 @@ The decks in display order, each with its cards in display order:
 - Paths are relative to `vault/` and use `/`.
 
 The fixture vaults are byte-for-byte test input (`.gitattributes` keeps git from changing their line endings), so edit them with care. The TypeScript runner is `packages/core/test/fixtures.test.ts`. Write behaviour (for example, that saving keeps unknown fields and leaves the body untouched) will get its own cases.
+
+## conflicts.json
+
+Cases for [Conflicts](../vault-format.md#conflicts), in four lists. Texts are whole files, written out in JSON strings, so their BOMs and line endings are exact.
+
+- **`parts`:** a `file`'s text and the texts of its waiting `versions`, and the `parts` that differ, in the order of the spec's table (`cover`, `description`, `note`, `bookmarks`, `icon`, `properties`), or `["file"]`.
+- **`resolve`:** a `file`, its waiting `versions`, and what the person picks: `choose` maps a part to the index of a version in `versions`, and a part not in it is the file's own. `result` is what's written: `null` for nothing; `{ "fields": …, "note": … }`, the fields by value and the note without a BOM and with LF line endings; or `{ "text": … }` when the whole file is the part.
+- **`belongsTo`:** the vault's cards and `_deck.md` files (`files`, each a `path` and maybe an `id`), a waiting `version` (its `file` and maybe its `id`), and the path of the file it belongs to, or `null`.
+- **`names`:** a waiting version's `file` and `saved` time, the names already holding other versions (`taken`, compared ignoring letter case), and the waiting version's file `name`.
+
+The TypeScript runner is `packages/core/test/conflicts.test.ts`.

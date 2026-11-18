@@ -1,0 +1,260 @@
+{
+  "parts": [
+    {
+      "case": "only the rank differs",
+      "file": "---\nid: 01JC0000000000000000000001\nrank: 2\n---\n\nNote\n",
+      "versions": ["---\nid: 01JC0000000000000000000001\nrank: 1.5\n---\n\nNote\n"],
+      "parts": []
+    },
+    {
+      "case": "the rank differs, and one version has an id and a created time",
+      "file": "---\nrank: 2\n---\n\nNote\n",
+      "versions": [
+        "---\nid: 01JC0000000000000000000001\nrank: 3\ncreated: 2026-11-18T14:03:12Z\n---\n\nNote\n"
+      ],
+      "parts": []
+    },
+    {
+      "case": "quoting, field order, a BOM and line endings don't count",
+      "file": "---\ndescription: Hire it\ncover: \"[[jobs.webp]]\"\n---\n\nNote\n",
+      "versions": ["\ufeff---\r\ncover: '[[jobs.webp]]'\r\ndescription: \"Hire it\"\r\n---\r\n\r\nNote\r\n"],
+      "parts": []
+    },
+    {
+      "case": "the note",
+      "file": "---\nid: 01JC0000000000000000000001\n---\n\nFirst thoughts\n",
+      "versions": ["---\nid: 01JC0000000000000000000001\n---\n\nSecond thoughts\n"],
+      "parts": ["note"]
+    },
+    {
+      "case": "a cover and its crop are one part",
+      "file": "---\ncover: \"[[jobs.webp]]\"\ncover-crop: [0, 0, 1, 1]\n---\n",
+      "versions": ["---\ncover: \"[[jobs.webp]]\"\ncover-crop: [0.1, 0, 0.8, 1]\n---\n"],
+      "parts": ["cover"]
+    },
+    {
+      "case": "a description one version doesn't have",
+      "file": "---\nid: 01JC0000000000000000000001\n---\n\nNote\n",
+      "versions": ["---\nid: 01JC0000000000000000000001\ndescription: Hire it\n---\n\nNote\n"],
+      "parts": ["description"]
+    },
+    {
+      "case": "bookmarks",
+      "file": "---\nbookmarks:\n  - url: https://example.com/jobs\n    title: Jobs\n---\n",
+      "versions": ["---\nbookmarks:\n  - url: https://example.com/jobs\n    title: Jobs to be done\n---\n"],
+      "parts": ["bookmarks"]
+    },
+    {
+      "case": "other fields are one part",
+      "file": "---\nkind: idea\naliases: [JTBD]\n---\n",
+      "versions": ["---\nkind: skill\n---\n"],
+      "parts": ["properties"]
+    },
+    {
+      "case": "a deck file: its icon is a part, its pad and rank aren't",
+      "file": "---\nicon: book-open\npad: 2\nrank: 1\n---\n\nBooks worth rereading\n",
+      "versions": ["---\nicon: library\npad: 5\nrank: 3\n---\n\nBooks worth rereading\n"],
+      "parts": ["icon"]
+    },
+    {
+      "case": "parts from several versions, in the table's order",
+      "file": "---\ndescription: Hire it\n---\n\nFirst\n",
+      "versions": [
+        "---\ndescription: Hire it\n---\n\nSecond\n",
+        "---\ndescription: Hired\n---\n\nFirst\n"
+      ],
+      "parts": ["description", "note"]
+    },
+    {
+      "case": "frontmatter that isn't YAML makes the whole file one part",
+      "file": "---\ndescription: Hire it\n---\n\nNote\n",
+      "versions": ["---\ndescription: [unclosed\n---\n\nNote\n"],
+      "parts": ["file"]
+    },
+    {
+      "case": "whole texts that differ only in line endings",
+      "file": "---\ndescription: [unclosed\n---\n\nNote\n",
+      "versions": ["---\r\ndescription: [unclosed\r\n---\r\n\r\nNote\r\n"],
+      "parts": []
+    },
+    {
+      "case": "a file without frontmatter",
+      "file": "Just a note\n",
+      "versions": ["---\nrank: 4\n---\nJust a note\n"],
+      "parts": []
+    }
+  ],
+  "resolve": [
+    {
+      "case": "the note from a waiting version",
+      "file": "---\nid: A1\ndescription: Hire it\nrank: 2\n---\n\nFirst thoughts\n",
+      "versions": ["---\nid: A1\ndescription: Hire it\nrank: 1.5\n---\n\nSecond thoughts\n"],
+      "choose": { "note": 0 },
+      "result": { "fields": { "id": "A1", "description": "Hire it", "rank": 2 }, "note": "\nSecond thoughts\n" }
+    },
+    {
+      "case": "parts from two waiting versions",
+      "file": "---\ndescription: Hire it\n---\n\nFirst\n",
+      "versions": [
+        "---\ndescription: Hired\n---\n\nFirst\n",
+        "---\ndescription: Hire it\n---\n\nThird\n"
+      ],
+      "choose": { "description": 0, "note": 1 },
+      "result": { "fields": { "description": "Hired" }, "note": "\nThird\n" }
+    },
+    {
+      "case": "a part the version picked doesn't have",
+      "file": "---\nid: A1\ndescription: Hire it\n---\n\nNote\n",
+      "versions": ["---\nid: A1\n---\n\nNote\n"],
+      "choose": { "description": 0 },
+      "result": { "fields": { "id": "A1" }, "note": "\nNote\n" }
+    },
+    {
+      "case": "a cover comes with its crop",
+      "file": "---\ncover: \"[[jobs.webp]]\"\ncover-crop: [0.1, 0, 0.8, 1]\n---\n",
+      "versions": ["---\ncover: \"[[jobs 20261118-140312.webp]]\"\n---\n"],
+      "choose": { "cover": 0 },
+      "result": { "fields": { "cover": "[[jobs 20261118-140312.webp]]" }, "note": "" }
+    },
+    {
+      "case": "the file keeps its own id, created time and rank",
+      "file": "---\nid: A1\ncreated: 2026-11-01T09:00:00Z\nrank: 2\ndescription: Hire it\n---\n",
+      "versions": ["---\nid: B2\ncreated: 2026-11-02T09:00:00Z\nrank: 7\ndescription: Hired\n---\n"],
+      "choose": { "description": 0 },
+      "result": {
+        "fields": { "id": "A1", "created": "2026-11-01T09:00:00Z", "rank": 2, "description": "Hired" },
+        "note": ""
+      }
+    },
+    {
+      "case": "other fields come together",
+      "file": "---\nkind: idea\naliases: [JTBD]\ndescription: Hire it\n---\n",
+      "versions": ["---\nkind: skill\ntags: [product]\ndescription: Hire it\n---\n"],
+      "choose": { "properties": 0 },
+      "result": { "fields": { "kind": "skill", "tags": ["product"], "description": "Hire it" }, "note": "" }
+    },
+    {
+      "case": "a deck's icon, keeping its own pad and rank",
+      "file": "---\nicon: book-open\npad: 2\nrank: 1\n---\n\nBooks worth rereading\n",
+      "versions": ["---\nicon: library\npad: 5\nrank: 3\n---\n\nBooks worth rereading\n"],
+      "choose": { "icon": 0 },
+      "result": { "fields": { "icon": "library", "pad": 2, "rank": 1 }, "note": "\nBooks worth rereading\n" }
+    },
+    {
+      "case": "nothing is written when every part picked is the file's own",
+      "file": "---\ndescription: Hire it\n---\n\nFirst\n",
+      "versions": ["---\ndescription: Hired\n---\n\nSecond\n"],
+      "choose": {},
+      "result": null
+    },
+    {
+      "case": "nothing is written when the part picked is the same as the file's",
+      "file": "---\ndescription: Hire it\n---\n\nFirst\n",
+      "versions": [
+        "---\ndescription: Hire it\n---\n\nFirst\n",
+        "---\ndescription: Hire it\n---\n\nSecond\n"
+      ],
+      "choose": { "note": 0 },
+      "result": null
+    },
+    {
+      "case": "a choice for a part that doesn't differ changes nothing",
+      "file": "---\ndescription: Hire it\nrank: 2\n---\n\nFirst\n",
+      "versions": ["---\ndescription: Hire it\nrank: 5\n---\n\nFirst\n"],
+      "choose": { "description": 0, "note": 0 },
+      "result": null
+    },
+    {
+      "case": "the whole file, when frontmatter isn't YAML",
+      "file": "---\ndescription: Hire it\n---\n\nNote\n",
+      "versions": ["---\ndescription: [unclosed\n---\n\nNote, edited\n"],
+      "choose": { "file": 0 },
+      "result": { "text": "---\ndescription: [unclosed\n---\n\nNote, edited\n" }
+    }
+  ],
+  "belongsTo": [
+    {
+      "case": "by id, after the card was renamed and moved",
+      "files": [{ "path": "Ideas/Jobs To Be Done.md", "id": "A1" }, { "path": "Books/Atomic Habits.md" }],
+      "version": { "file": "Inbox/Jobs.md", "id": "A1" },
+      "belongsTo": "Ideas/Jobs To Be Done.md"
+    },
+    {
+      "case": "by path when no card has the id",
+      "files": [{ "path": "Books/Atomic Habits.md", "id": "B2" }],
+      "version": { "file": "Books/Atomic Habits.md", "id": "A1" },
+      "belongsTo": "Books/Atomic Habits.md"
+    },
+    {
+      "case": "by path without an id",
+      "files": [{ "path": "Books/Atomic Habits.md" }],
+      "version": { "file": "Books/Atomic Habits.md" },
+      "belongsTo": "Books/Atomic Habits.md"
+    },
+    {
+      "case": "a deck file",
+      "files": [{ "path": "Books/_deck.md" }, { "path": "Books/Atomic Habits.md" }],
+      "version": { "file": "Books/_deck.md" },
+      "belongsTo": "Books/_deck.md"
+    },
+    {
+      "case": "a shared id belongs to the card that keeps it",
+      "files": [
+        { "path": "Ideas/Jobs copy.md", "id": "A1" },
+        { "path": "Ideas/Jobs To Be Done.md", "id": "A1" }
+      ],
+      "version": { "file": "Inbox/Jobs.md", "id": "A1" },
+      "belongsTo": "Ideas/Jobs To Be Done.md"
+    },
+    {
+      "case": "no file",
+      "files": [{ "path": "Books/Atomic Habits.md" }],
+      "version": { "file": "Gone/Card.md" },
+      "belongsTo": null
+    }
+  ],
+  "names": [
+    {
+      "case": "a card's title and the time it was saved",
+      "file": "Product Strategy/Jobs To Be Done.md",
+      "saved": "2026-11-18T14:03:12Z",
+      "taken": [],
+      "name": "Jobs To Be Done 20261118-140312.json"
+    },
+    {
+      "case": "a card in a folder inside its deck",
+      "file": "Books/Psychology/Thinking, Fast and Slow.md",
+      "saved": "2026-11-18T14:03:12Z",
+      "taken": [],
+      "name": "Thinking, Fast and Slow 20261118-140312.json"
+    },
+    {
+      "case": "a deck file has the deck's name",
+      "file": "Books/_deck.md",
+      "saved": "2026-11-18T14:03:12Z",
+      "taken": [],
+      "name": "Books 20261118-140312.json"
+    },
+    {
+      "case": "a name that holds another version, in any letter case",
+      "file": "Product Strategy/Jobs To Be Done.md",
+      "saved": "2026-11-18T14:03:12Z",
+      "taken": ["JOBS TO BE DONE 20261118-140312.JSON", "jobs to be done 20261118-140312 1.json"],
+      "name": "Jobs To Be Done 20261118-140312 2.json"
+    },
+    {
+      "case": "the time in UTC",
+      "file": "Product Strategy/Jobs To Be Done.md",
+      "saved": "2026-11-18T18:03:12+04:00",
+      "taken": [],
+      "name": "Jobs To Be Done 20261118-140312.json"
+    },
+    {
+      "case": "parts of the time padded, and parts of a second left out",
+      "file": "Product Strategy/Jobs To Be Done.md",
+      "saved": "2026-01-02T03:04:05.900Z",
+      "taken": [],
+      "name": "Jobs To Be Done 20260102-030405.json"
+    }
+  ]
+}

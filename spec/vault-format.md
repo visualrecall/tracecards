@@ -17,6 +17,8 @@ Implementations ignore:
 - any file or folder whose name starts with `.` (for example `.obsidian/`, `.trash/`, `.git/`)
 - the attachments folder (see [Attachments](#attachments))
 
+`.tracecards/` is the one hidden folder they read, only for what this file says it holds (see [Not stored in the vault](#not-stored-in-the-vault)), never as decks or cards.
+
 ## Decks
 
 Each folder directly under the root is a deck. The folder name is the deck name. Files directly in the root aren't cards.
@@ -84,7 +86,7 @@ A card without a cover, or whose cover image can't be found, shows a placeholder
 - **`cover`** is then `"[[<file name>]]"`, written to the card together with `cover-crop`, after the image is saved.
 - **`cover-crop`** is written only when the user moves or zooms the image, with up to four decimal places. A new image that wasn't moved or zoomed has no `cover-crop`, so it's shown whole, trimmed to fit as above.
 - **Removing a cover** removes `cover` and `cover-crop`.
-- **The old image**, when a cover is replaced or removed, is moved to the trash if it's in `attachments/` and nothing else links to it: no other card or note, and nothing else in the card. Images outside `attachments/` are never moved.
+- **The old image**, when a cover is replaced or removed, is moved to the trash if it's in `attachments/` and nothing else links to it: no other card or note, no [waiting version](#waiting-versions), and nothing else in the card. Images outside `attachments/` are never moved.
 
 ### Order
 
@@ -166,18 +168,71 @@ Wikilinks to them are resolved the way Obsidian resolves them: a bare file name 
 - Keep unknown frontmatter fields, with their order and values. Users and other Obsidian plugins add their own.
 - When only the frontmatter changes, leave the body byte-for-byte unchanged, and the other way round.
 - Write atomically: write to a temporary file whose name starts with `.` in the same folder, then rename it over the original.
-- Deleting a card or deck moves it to the system trash. Implementations never delete files permanently.
+- Deleting a card or deck moves it to the system trash. Implementations never delete files permanently, apart from waiting versions once their conflict is resolved (see [Resolving a conflict](#resolving-a-conflict)).
 - New files are UTF-8 without a BOM, with LF line endings. Edited files keep their existing line endings.
 
 ## Not stored in the vault
 
 The search index, thumbnail cache, sync state (what each device has already downloaded), and window and UI state live in the app's data folder on each platform, keyed by the vault's path. A constantly changing cache inside the vault would trigger syncs all the time, and each device builds its own anyway.
 
-`.tracecards/` at the vault root is reserved for small, sync-safe settings if we ever need them, and for the format version (see [Versions and upgrades](#versions-and-upgrades)). Version 1 doesn't use it.
+`.tracecards/` at the vault root holds what has to sync with the vault but isn't a deck or a card: [waiting versions](#waiting-versions) in `.tracecards/versions/`, and later the format version (see [Versions and upgrades](#versions-and-upgrades)). Small, sync-safe settings could go there too if they're ever needed.
 
 ## Conflicts
 
-Sync tools resolve conflicts in their own way, since Tracecards never runs a sync server of its own. In version 1, the conflict copies they leave behind, such as `Card (conflicted copy).md` or `Card.sync-conflict-….md`, are ordinary cards. A copy keeps the original's `id`, so a later version can flag it as a conflicting version of the original.
+A conflict is two devices changing the same file before either has the other's change, most often because one of them was offline or shut right after an edit. Tracecards never runs a sync server of its own, so the sync tool settles it first: most keep one version as the file, and keep the other out of sight or as a copy beside it.
+
+Implementations don't merge versions, and don't let one quietly win when they differ in what the person wrote. The version the sync tool kept stays the file, and each other version waits, as a waiting version, until the person chooses.
+
+### Waiting versions
+
+- **A waiting version** is a JSON file in `.tracecards/versions/`:
+
+  ```json
+  {
+    "file": "Product Strategy/Jobs To Be Done.md",
+    "id": "01JBQ6Z7X8Y9K2M3N4P5Q6R7S8",
+    "saved": "2026-11-18T14:03:12Z",
+    "device": "MacBook Air",
+    "text": "---\nid: 01JBQ6Z7X8Y9K2M3N4P5Q6R7S8\nrank: 2\n---\n\nThe note as it was on that device.\n"
+  }
+  ```
+
+  `file` is the path of the card or `_deck.md` it's a version of, as it was when the conflict was noticed, and `text` the version's whole content. `id` is the card's `id`, when it has one. `saved`, when the version was saved, in UTC, and `device`, the name of the device that saved it, are there when the sync tool says.
+- **Its name** is the card's title, or the deck's name for a `_deck.md`, and `saved` (or, without it, the time the conflict was noticed) in UTC, to the second: `Jobs To Be Done 20261118-140312.json`. When a file of that name, ignoring letter case, holds a different version, ` 1`, ` 2` and so on are added. When it holds the same version, nothing is written, since that version is already waiting. So two devices that notice the same conflict usually write it once.
+- **It belongs to** the card with its `id` (the card that keeps the `id`, when several share it; see [Ids](#ids)), or else to the card or `_deck.md` at its `file` path. A waiting version that belongs to no file is left as it is.
+- **Two waiting versions are the same version** when they belong to the same file and have the same `text`.
+- **It's only created and removed,** never changed, and it's written like any new file (see [Writing rules](#writing-rules)).
+
+Where waiting versions come from depends on the sync tool:
+
+- **Versions kept out of sight,** as iCloud Drive keeps them: the implementation copies each one into `.tracecards/versions/`, then has the sync tool remove it.
+- **An upload refused** because the file changed after it was read, as Dropbox's API can refuse one: the refused version waits.
+- **A revision an upload replaced,** found in the file's revisions after the upload, as with Google Drive: that revision waits.
+- **Copies beside the file,** such as `Card (conflicted copy).md` or `Card.sync-conflict-….md`, are ordinary cards in version 1. A copy keeps the original's `id`, so a later version can turn it into a waiting version of the original.
+
+### Parts of a file
+
+The file and its waiting versions are compared part by part, by value: fields as YAML values, so quoting, field order and line endings don't count, and the note as text, without a BOM and with LF line endings.
+
+| Part | What it holds |
+|---|---|
+| `cover` | `cover` and `cover-crop` |
+| `description` | `description` |
+| `note` | the note, or for a `_deck.md` the deck's description |
+| `bookmarks` | `bookmarks` |
+| `icon` | `icon` |
+| `properties` | every other field, such as `kind`, and the fields users and other plugins add |
+
+`id`, `created`, `rank` and `pad` aren't parts. They're the file's identity and its place, and the file keeps its own.
+
+When the frontmatter of the file or of a waiting version isn't valid YAML, they're compared as whole texts instead, without a BOM and with LF line endings, and the only part is `file`.
+
+### Resolving a conflict
+
+- **When no part differs,** as when two devices only moved a card or reordered a deck, the file stays as it is and the waiting version is removed, without asking and without writing the file. So two devices doing this at once can't make a new conflict.
+- **Otherwise the person chooses.** Implementations show that the card or deck has another version. The person picks each part that differs from the file or from one of its waiting versions, and the implementation writes the file with those parts, by the writing rules: it keeps the file's own `id`, `created`, `rank` and `pad`, changes only the fields that change, and leaves the note byte for byte when it's the file's own. Nothing is written when every part picked is the file's own. Then all of the file's waiting versions are removed.
+- **A removed waiting version is deleted,** not moved to the trash: what it held is either in the file now or was turned down.
+- **Images:** an image linked from a waiting version counts as linked (see [Setting a cover](#setting-a-cover)). Removing a waiting version moves no image to the trash.
 
 ## Versions and upgrades
 

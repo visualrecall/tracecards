@@ -2945,8 +2945,15 @@ button.tracecards-print-change:hover {
   font-size: var(--font-ui-smaller);
   line-height: 1.2;
   text-align: center;
-  hyphens: auto;
-  overflow-wrap: anywhere;
+}
+
+.tracecards-deck-sheet-word {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
 }
 
 .tracecards-deck-sheet .tracecards-deck-sheet-tile.is-empty {

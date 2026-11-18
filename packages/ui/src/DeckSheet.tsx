@@ -50,7 +50,17 @@ export function DeckSheet({ decks, selected, onSelect, close }: DeckSheetProps) 
               onContextMenu={menu(deck)}
             >
               <Icon name={deck.icon ?? ICONS.deck} />
-              <span className="tracecards-deck-sheet-name">{deck.name}</span>
+              <span className="tracecards-deck-sheet-name">
+                {/* A box per word, so a name breaks only between words, and a word too wide for
+                    the tile ends in "…" rather than breaking. */}
+                {deck.name.split(" ").map((word, i) => (
+                  // By place: a name's words never move.
+                  <span key={i}>
+                    {i > 0 && " "}
+                    <span className="tracecards-deck-sheet-word">{word}</span>
+                  </span>
+                ))}
+              </span>
             </button>
           ) : (
             <button

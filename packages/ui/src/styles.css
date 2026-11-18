@@ -1221,7 +1221,10 @@
   transition: left 0.3s ease;
 }
 
+/* One line tall when the face is centred, so a second line hangs below it and the icon stays in
+   the same place on every tile. */
 .tracecards-deck-name {
+  height: 1.2em;
   font-size: var(--font-ui-smaller);
   font-weight: var(--font-semibold);
   letter-spacing: 0.05em;

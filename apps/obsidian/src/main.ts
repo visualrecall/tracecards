@@ -27,6 +27,7 @@ import { SIGN_IN_ACTION } from "./printing";
 import { RecentCards } from "./recent";
 import { SearchModal, type SearchMode } from "./SearchModal";
 import { DEFAULT_SETTINGS, parseSettings, type Settings, SettingsTab } from "./settings";
+import { SidebarSwitch } from "./sidebar";
 import { VaultStore } from "./store";
 
 export default class TracecardsPlugin extends Plugin {
@@ -42,11 +43,13 @@ export default class TracecardsPlugin extends Plugin {
   /** A deck dragged out of the Decks panel, for the Tracecards tab's pad to show where it would go. */
   readonly deckDrop = new ValueStore<DeckDrop | null>(null);
   private recent!: RecentCards;
+  private sidebar!: SidebarSwitch;
 
   override async onload(): Promise<void> {
     this.settings = parseSettings(await this.loadData());
     this.store = new VaultStore(this.app, this.settings.folder);
     this.recent = new RecentCards(this.app);
+    this.sidebar = new SidebarSwitch(this);
     this.host = new ObsidianHost(this.app, this.store, this.recent, this);
     this.register(() => this.store.refreshSoon.cancel());
     this.registerEvent(
@@ -120,6 +123,10 @@ export default class TracecardsPlugin extends Plugin {
       this.registerEvent(this.app.vault.on("rename", onFileEvent));
       // Its second argument is the file's text, not an old path.
       this.registerEvent(this.app.metadataCache.on("changed", (file) => onFileEvent(file)));
+      // After the layout loads, so the sidebar opens on the panel it was saved with.
+      this.registerEvent(
+        this.app.workspace.on("active-leaf-change", (leaf) => this.sidebar.follow(leaf)),
+      );
     });
   }
 
@@ -262,6 +269,7 @@ export default class TracecardsPlugin extends Plugin {
       ? [workspace.leftSplit, workspace.rightSplit].find((side) => side === root)
       : undefined;
     const closedDrawer = drawer?.collapsed === true;
+    this.sidebar.noteReplaced();
     await workspace.ensureSideLeaf(DECKS_VIEW_TYPE, "left", { reveal: true });
     // Obsidian has no way to choose a drawer's panel without opening it, so revealing the panel
     // opened the drawer; closing it again straight away, before it's drawn, leaves Decks chosen.

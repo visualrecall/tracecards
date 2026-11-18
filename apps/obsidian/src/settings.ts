@@ -37,6 +37,11 @@ export interface Settings {
   /** The most cards in a row in the grid view. A narrow tab fits fewer. */
   gridColumns: number;
   /**
+   * Whether going to a Tracecards tab brings the Decks panel forward in the sidebar, and going to
+   * any other tab brings back the panel it came forward over.
+   */
+  switchSidebar: boolean;
+  /**
    * How cards show their titles: in title case, or as typed. There's no setting for it on the
    * settings tab yet; it's here so one can be added without changing what's saved.
    */
@@ -65,6 +70,7 @@ export const DEFAULT_SETTINGS: Settings = {
   settingsVersion: SETTINGS_VERSION,
   folder: "Tracecards",
   gridColumns: 5,
+  switchSidebar: true,
   titleCase: DEFAULT_TITLE_CASE,
   pixabayKey: "",
   gameCrafterPublicKey: "",
@@ -89,6 +95,10 @@ export function parseSettings(data: unknown): Settings {
     settingsVersion: version,
     folder: isVaultRoot(folder) ? DEFAULT_SETTINGS.folder : folder,
     gridColumns: gridColumns(saved.gridColumns),
+    switchSidebar:
+      typeof saved.switchSidebar === "boolean"
+        ? saved.switchSidebar
+        : DEFAULT_SETTINGS.switchSidebar,
     titleCase: TITLE_CASES.find((each) => each === saved.titleCase) ?? DEFAULT_TITLE_CASE,
     pixabayKey: typeof saved.pixabayKey === "string" ? saved.pixabayKey : "",
     gameCrafterPublicKey:
@@ -184,6 +194,11 @@ export class SettingsTab extends PluginSettingTab {
         name: "Cards in a row",
         desc: "The most cards in a row in the grid view. A narrow tab fits fewer.",
         control: { type: "number", key: "gridColumns", step: 1, ...GRID_COLUMNS },
+      },
+      {
+        name: "Switch the sidebar to Decks",
+        desc: "Going to a Tracecards tab brings the Decks panel forward in the sidebar, and going to any other tab brings back the panel it replaced.",
+        control: { type: "toggle", key: "switchSidebar" },
       },
       {
         name: "Pixabay API key",

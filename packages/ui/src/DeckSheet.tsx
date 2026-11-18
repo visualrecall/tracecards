@@ -38,7 +38,8 @@ export function DeckSheet({ decks, selected, onSelect, close }: DeckSheetProps) 
   return (
     <div className="tracecards-deck-sheet">
       <h3 className="tracecards-phone-section">On the pad</h3>
-      <div className="tracecards-deck-sheet-pad">
+      {/* The fold: on phones the sheet opens only down to here, by the thumb, and pulls up. */}
+      <div className="tracecards-deck-sheet-pad tracecards-sheet-fold">
         {slots.map((deck, slot) =>
           deck ? (
             <button

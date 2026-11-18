@@ -266,6 +266,46 @@ body:not(.is-mobile) .workspace-leaf-content[data-type="tracecards-grid"] > .vie
   padding-bottom: calc(var(--safe-area-inset-bottom, 0px) + var(--size-4-4));
 }
 
+/* A sheet with a fold (see `SheetModal`): it opens only down to the fold and is pulled up for
+   the rest. While it's short, a touch anywhere on it drags it; once it's up, only its top does
+   and the content scrolls. */
+.is-phone .tracecards-sheet .modal.is-pullable {
+  display: flex;
+  flex-direction: column;
+  height: var(--tracecards-sheet-height);
+  overflow: hidden;
+}
+
+.is-phone .tracecards-sheet .modal.is-pullable.is-settling {
+  transition: height 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.is-phone .tracecards-sheet .modal.is-pullable .modal-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.is-phone .tracecards-sheet .modal.is-pullable.is-short,
+.is-phone .tracecards-sheet .modal.is-pullable > :not(.modal-content) {
+  touch-action: none;
+}
+
+.is-phone .tracecards-sheet .modal.is-pullable.is-short .modal-content {
+  overflow: hidden;
+}
+
+/* The bar at the top that says the sheet can be pulled. */
+.tracecards-sheet-grabber {
+  flex: none;
+  width: 36px;
+  height: 5px;
+  margin: var(--size-4-2) auto 0;
+  border-radius: 3px;
+  background: var(--text-faint);
+  opacity: 0.5;
+}
+
 /*
  * A card in a canvas: its face fills the node in a card's shape, whatever size the node is
  * given. Canvas draws the node's frame, so the face has no shadow of its own.

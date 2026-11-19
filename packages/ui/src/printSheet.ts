@@ -131,22 +131,20 @@ export function buildSheets(job: SheetJob): Uint8Array {
 const EDGE = 8;
 
 /**
- * The cut lines: a hairline round every card, and dashed lines carrying each cut on through the
- * margins to near the paper's edge, with scissors at the start of each line across the page.
+ * The cut lines: a hairline round every card, and dashed lines carrying each cut on to near the
+ * paper's edge, through the margins and through the places a last, part-filled sheet leaves
+ * empty, with scissors at the start of each line across the page.
  */
 function cutLines(slots: Slot[], paper: Paper): string {
   const { width, height } = PAPERS[paper];
   const grid = gridOrigin(paper);
-  const gridTop = grid.bottom + ROWS * CARD.height;
-  const gridRight = grid.left + COLUMNS * CARD.width;
-  const xs = new Set<number>();
-  const ys = new Set<number>();
-  const bottomRow = new Set<number>();
-  for (const { x, y } of slots) {
-    xs.add(x).add(x + CARD.width);
-    ys.add(y).add(y + CARD.height);
-    if (y === grid.bottom) bottomRow.add(x).add(x + CARD.width);
-  }
+  // Each card's place in the grid, by column from the left and row from the bottom.
+  const cells = slots.map(({ x, y }) => ({
+    column: Math.round((x - grid.left) / CARD.width),
+    row: Math.round((y - grid.bottom) / CARD.height),
+  }));
+  const xAt = (column: number) => grid.left + column * CARD.width;
+  const yAt = (row: number) => grid.bottom + row * CARD.height;
 
   let ops = "q 0.3 w 0.75 G\n";
   for (const { x, y } of slots) ops += `${num(x)} ${num(y)} ${CARD.width} ${CARD.height} re S\n`;
@@ -154,11 +152,22 @@ function cutLines(slots: Slot[], paper: Paper): string {
   const line = (x1: number, y1: number, x2: number, y2: number) =>
     `${num(x1)} ${num(y1)} m ${num(x2)} ${num(y2)} l S\n`;
   const scissors = { size: 8, width: 8 };
-  for (const x of xs) ops += line(x, gridTop, x, height - EDGE);
-  for (const x of bottomRow) ops += line(x, EDGE, x, grid.bottom);
-  for (const y of ys) {
-    ops += line(EDGE + scissors.width + 2, y, grid.left, y);
-    ops += line(gridRight, y, width - EDGE, y);
+  // A cut between columns, or rows, runs dashed from the cards along it to both edges of the paper.
+  for (let edge = 0; edge <= COLUMNS; edge++) {
+    const rows = cells.filter(({ column }) => column === edge - 1 || column === edge);
+    if (rows.length === 0) continue;
+    const x = xAt(edge);
+    ops += line(x, yAt(Math.max(...rows.map(({ row }) => row)) + 1), x, height - EDGE);
+    ops += line(x, EDGE, x, yAt(Math.min(...rows.map(({ row }) => row))));
+  }
+  const ys: number[] = [];
+  for (let edge = 0; edge <= ROWS; edge++) {
+    const columns = cells.filter(({ row }) => row === edge - 1 || row === edge);
+    if (columns.length === 0) continue;
+    const y = yAt(edge);
+    ys.push(y);
+    ops += line(EDGE + scissors.width + 2, y, xAt(Math.min(...columns.map((c) => c.column))), y);
+    ops += line(xAt(Math.max(...columns.map((c) => c.column)) + 1), y, width - EDGE, y);
   }
   ops += "Q\n";
   // ✂ is the character " in Zapf Dingbats, drawn here with its blades along the line.

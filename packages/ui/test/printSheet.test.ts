@@ -71,6 +71,25 @@ describe("buildSheets", () => {
     expect(file).toContain("/Duplex /DuplexFlipLongEdge");
   });
 
+  it("carries the cuts on through the places a part-filled sheet leaves empty", () => {
+    // Five cards on Letter: a full top row, then two. The grid starts at 63, 18; cards are 162
+    // by 252; the marks stop 8 points from the edge.
+    const file = text(
+      buildSheets({ ...job, faces: Array.from({ length: 5 }, () => jpeg), back: null }),
+    );
+    // Under the row of two, on from its second card to the right edge.
+    expect(file).toContain("387 270 m 604 270 l S");
+    // Down from the row of two, and down from the top row where there's no card under it.
+    expect(file).toContain("387 8 m 387 270 l S");
+    expect(file).toContain("549 8 m 549 522 l S");
+    // A full sheet's cuts start at the grid's edges.
+    const full = text(
+      buildSheets({ ...job, faces: Array.from({ length: 9 }, () => jpeg), back: null }),
+    );
+    expect(full).toContain("549 18 m 604 18 l S");
+    expect(full).toContain("549 8 m 549 18 l S");
+  });
+
   it("stores the back once however many cards it's on", () => {
     const file = text(buildSheets({ ...job, faces: [jpeg, jpeg, jpeg], back: jpeg }));
     expect(file.match(/\/Subtype \/Image/g)?.length).toBe(4);

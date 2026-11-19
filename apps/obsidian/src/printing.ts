@@ -18,19 +18,12 @@ const BACKS_FOLDER = "backs";
 const IMAGE_TYPES: Record<string, string> = { webp: "image/webp", jpg: "image/jpeg" };
 
 /**
- * The parts of Electron that Obsidian on the desktop puts on the window, which its own code uses
- * the same way, as to show a file in its folder. Unlike the browser's save dialog, Electron's says
- * where the file is to go, so it can be opened and shown there once it's saved.
+ * The part of Electron that Obsidian on the desktop puts on the window, which its own code uses
+ * the same way, to open a file and to show it in its folder.
  */
 interface ElectronWindow {
   electron?: {
     remote?: {
-      dialog?: {
-        showSaveDialog: (options: {
-          defaultPath: string;
-          filters: { name: string; extensions: string[] }[];
-        }) => Promise<{ canceled: boolean; filePath?: string }>;
-      };
       shell?: {
         openPath: (path: string) => Promise<string>;
         showItemInFolder: (path: string) => void;
@@ -39,13 +32,37 @@ interface ElectronWindow {
   };
 }
 
-/** Writes a file anywhere on the device, which only the desktop app can do. */
-async function writeOutsideVault(path: string, data: Uint8Array): Promise<void> {
-  if (!Platform.isDesktop) throw new Error("Only the desktop app can save outside the vault.");
-  // Loaded only here, so phones, which have no Node, never load it. The build turns this into
-  // Node's own require, as Obsidian loads plugins as CommonJS.
-  const { writeFile } = await import("node:fs/promises");
-  await writeFile(path, data);
+/** The browser's save dialog, which the desktop app has and TypeScript's DOM types don't yet. */
+interface SavePickerWindow {
+  showSaveFilePicker?: (options: {
+    suggestedName: string;
+    types: { description: string; accept: Record<string, string[]> }[];
+  }) => Promise<FileSystemFileHandle>;
+}
+
+/**
+ * Asks where to save a PDF with the system's save dialog, through the browser's file picker, so
+ * the plugin writes only the one file the user names and nothing else outside the vault. The
+ * picker gives the file to write but not where it is, so the PDF can't be opened or shown in its
+ * folder afterwards. Resolves to the file, "canceled", or null where the dialog isn't there or
+ * can't open.
+ */
+async function pickPdfFile(name: string): Promise<FileSystemFileHandle | "canceled" | null> {
+  const picker = window as SavePickerWindow;
+  if (!Platform.isDesktopApp || !picker.showSaveFilePicker) return null;
+  try {
+    return await picker.showSaveFilePicker({
+      suggestedName: name,
+      types: [{ description: "PDF", accept: { "application/pdf": [".pdf"] } }],
+    });
+  } catch (error) {
+    return error instanceof DOMException && error.name === "AbortError" ? "canceled" : null;
+  }
+}
+
+/** The bytes on their own, as the file APIs take them. */
+function arrayBuffer(data: Uint8Array): ArrayBuffer {
+  return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength) as ArrayBuffer;
 }
 
 /** What the system calls its files app, for "Show in …". */
@@ -195,18 +212,15 @@ export class ObsidianPrinting implements Printing {
   };
 
   readonly savePdf = async (name: string): Promise<SaveTarget | null> => {
-    const dialog = (window as ElectronWindow).electron?.remote?.dialog;
-    if (Platform.isDesktopApp && dialog) {
-      const chosen = await dialog.showSaveDialog({
-        defaultPath: name,
-        filters: [{ name: "PDF", extensions: ["pdf"] }],
-      });
-      if (chosen.canceled || !chosen.filePath) return null;
-      const path = chosen.filePath;
+    const picked = await pickPdfFile(name);
+    if (picked === "canceled") return null;
+    if (picked) {
       return {
         write: async (data) => {
-          await writeOutsideVault(path, data);
-          return { where: path.split(/[\\/]/).pop() ?? path, ...this.systemFile(path) };
+          const stream = await picked.createWritable();
+          await stream.write(arrayBuffer(data));
+          await stream.close();
+          return { where: picked.name };
         },
       };
     }
@@ -214,8 +228,7 @@ export class ObsidianPrinting implements Printing {
     return {
       write: async (data) => {
         const path = await this.app.fileManager.getAvailablePathForAttachment(name);
-        const bytes = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
-        const file = await this.app.vault.createBinary(path, bytes as ArrayBuffer);
+        const file = await this.app.vault.createBinary(path, arrayBuffer(data));
         const { adapter } = this.app.vault;
         return adapter instanceof FileSystemAdapter
           ? { where: `${path}, in your vault`, ...this.systemFile(adapter.getFullPath(path)) }

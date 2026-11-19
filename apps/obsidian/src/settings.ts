@@ -1,4 +1,11 @@
-import { type CoverCrop, migrate, type Migration, parseCrop, type Saved } from "@tracecards/core";
+import {
+  type CoverCrop,
+  isVersion,
+  migrate,
+  type Migration,
+  parseCrop,
+  type Saved,
+} from "@tracecards/core";
 import {
   DEFAULT_TITLE_CASE,
   FACE_THEMES,
@@ -64,6 +71,14 @@ export interface Settings {
   printBack: string;
   /** The part of a custom back to print, or undefined to fill the card with it. */
   printBackCrop: CoverCrop | undefined;
+  /** Whether to look up, once a day, whether a newer release is out. */
+  checkForUpdates: boolean;
+  /**
+   * The newest release that has run with these settings, or "" for none yet. Each release raises
+   * it to its own version and never lowers it, so a device that syncs these settings can tell when
+   * another one runs a newer release.
+   */
+  newestVersion: string;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -78,6 +93,8 @@ export const DEFAULT_SETTINGS: Settings = {
   printFaces: "dark",
   printBack: "default",
   printBackCrop: undefined,
+  checkForUpdates: true,
+  newestVersion: "",
 };
 
 /**
@@ -113,6 +130,11 @@ export function parseSettings(data: unknown): Settings {
         ? saved.printBack
         : DEFAULT_SETTINGS.printBack,
     printBackCrop: parseCrop(saved.printBackCrop),
+    checkForUpdates:
+      typeof saved.checkForUpdates === "boolean"
+        ? saved.checkForUpdates
+        : DEFAULT_SETTINGS.checkForUpdates,
+    newestVersion: isVersion(saved.newestVersion) ? saved.newestVersion : "",
   };
 }
 
@@ -214,6 +236,11 @@ export class SettingsTab extends PluginSettingTab {
         name: "Game Crafter private key",
         desc: "The Private Key from the same entry under Account → API Keys.",
         control: { type: "secret", key: "gameCrafterPrivateKey" },
+      },
+      {
+        name: "Check for new versions",
+        desc: "Once a day, looks up the latest Tracecards release on GitHub, to tell you when a new version is out. Nothing about you or your vault is sent. Updating is still up to you.",
+        control: { type: "toggle", key: "checkForUpdates" },
       },
     ];
   }

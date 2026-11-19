@@ -116,7 +116,9 @@ Every field is described in the [vault format spec](spec/vault-format.md).
 
 ## Network use
 
-The plugin works offline, needs no account and has no telemetry. Bookmarks load images and titles from other sites, and two optional features use services you sign up to yourself:
+The plugin works offline, needs no account and has no telemetry. It looks up its latest version, bookmarks load images and titles from other sites, and two optional features use services you sign up to yourself:
+
+- **New versions:** once a day, Tracecards reads a small file about its latest release from GitHub (`https://github.com/visualrecall/tracecards/releases/latest/download/update.json`), to tell you when a new version is out, at most once a week. Nothing about you or your vault is sent, and nothing is installed: updating stays with Obsidian's Community plugins. Turn it off with "Check for new versions" in Settings → Tracecards.
 
 - **Site icons** for links in the Bookmarks tab come from Google (`https://www.google.com/s2/favicons`), which receives each link's domain, whenever the tab is shown.
 - **Video thumbnails** come from YouTube (`https://i.ytimg.com`), in the Bookmarks tab.

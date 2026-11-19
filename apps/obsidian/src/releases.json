@@ -1,0 +1,9 @@
+[
+  {
+    "version": "0.8.0",
+    "headline": "Tracecards now tells you when a new version is out",
+    "notes": [
+      "Tracecards now tells you when a new version is out, at most once a week, and shows what's new after you update. Turn it off with \"Check for new versions\" in its settings."
+    ]
+  }
+]

@@ -29,6 +29,8 @@ import { SearchModal, type SearchMode } from "./SearchModal";
 import { DEFAULT_SETTINGS, parseSettings, type Settings, SettingsTab } from "./settings";
 import { SidebarSwitch } from "./sidebar";
 import { VaultStore } from "./store";
+import { UpdatePrompts } from "./updatePrompts";
+import { Updates } from "./updates";
 
 export default class TracecardsPlugin extends Plugin {
   override settings: Settings = DEFAULT_SETTINGS;
@@ -44,6 +46,9 @@ export default class TracecardsPlugin extends Plugin {
   readonly deckDrop = new ValueStore<DeckDrop | null>(null);
   private recent!: RecentCards;
   private sidebar!: SidebarSwitch;
+  /** Newer releases to offer, and what's new after an update. */
+  updates!: Updates;
+  private updatePrompts!: UpdatePrompts;
 
   override async onload(): Promise<void> {
     this.settings = parseSettings(await this.loadData());
@@ -51,6 +56,8 @@ export default class TracecardsPlugin extends Plugin {
     this.recent = new RecentCards(this.app);
     this.sidebar = new SidebarSwitch(this);
     this.host = new ObsidianHost(this.app, this.store, this.recent, this);
+    this.updates = new Updates(this);
+    this.updatePrompts = new UpdatePrompts(this.app, this.updates);
     this.register(() => this.store.refreshSoon.cancel());
     this.registerEvent(
       this.app.vault.on("rename", (file, oldPath) => this.recent.rename(oldPath, file.path)),
@@ -127,6 +134,14 @@ export default class TracecardsPlugin extends Plugin {
       this.registerEvent(
         this.app.workspace.on("active-leaf-change", (leaf) => this.sidebar.follow(leaf)),
       );
+      void this.updates.start();
+      this.register(this.updatePrompts.start());
+      // What's new shows in Tracecards: now, if it's open, or else when it's next opened.
+      if (this.app.workspace.getActiveViewOfType(GridView)) this.updatePrompts.showWhatsNew();
+      // For Obsidian left open for days. It looks the latest release up once a day at most.
+      this.registerInterval(
+        window.setInterval(() => void this.updates.checkIfDue(), 60 * 60 * 1000),
+      );
     });
   }
 
@@ -134,12 +149,15 @@ export default class TracecardsPlugin extends Plugin {
   override async onExternalSettingsChange(): Promise<void> {
     this.settings = parseSettings(await this.loadData());
     this.applySettings();
+    // Another device may have saved a newer release's version.
+    this.updates.refresh();
   }
 
   /** Applies changed settings. The settings tab calls it after saving. */
   applySettings(): void {
     this.store.setFolder(this.settings.folder);
     for (const doc of this.windowDocuments()) this.styleWindow(doc);
+    void this.updates.checkIfDue();
   }
 
   /**
@@ -156,6 +174,7 @@ export default class TracecardsPlugin extends Plugin {
   useGrid(view: GridView, deck: string | null): void {
     this.lastGrid = view.leaf;
     this.selection.set(deck);
+    this.updatePrompts.showWhatsNew();
   }
 
   /** Shows the grid view's deck in the Decks panel, if its tab is the one in use. */

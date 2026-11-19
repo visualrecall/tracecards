@@ -332,3 +332,50 @@ body:not(.is-mobile) .workspace-leaf-content[data-type="tracecards-grid"] > .vie
   padding: var(--size-4-4);
   color: var(--text-muted);
 }
+
+/* The notice that a newer version is out. */
+.tracecards-update-title {
+  font-weight: var(--font-semibold);
+}
+
+/* Dimmed with opacity, as notices have a background of their own that theme colours may not suit. */
+.tracecards-update-detail {
+  margin-top: var(--size-2-1);
+  opacity: 0.75;
+}
+
+/* The headline and the version read as one description. */
+.tracecards-update-detail + .tracecards-update-detail {
+  margin-top: 0;
+}
+
+.tracecards-update-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-2);
+  margin-top: var(--size-4-3);
+}
+
+.tracecards-update-notes {
+  margin-left: auto;
+  color: inherit;
+  font-size: var(--font-ui-smaller);
+  opacity: 0.7;
+}
+
+.tracecards-update-notes:hover {
+  opacity: 1;
+}
+
+.tracecards-whats-new h3 {
+  margin: var(--size-4-4) 0 var(--size-4-1);
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.tracecards-whats-new-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--size-4-6);
+}

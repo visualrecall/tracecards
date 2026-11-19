@@ -53,14 +53,22 @@ People skip releases, and their devices update at different times, so a new rele
 
 ## Releasing
 
-Releases are made from `main` by a maintainer:
+Releases are made from `main` by a maintainer. First add the release's entry at the top of `apps/obsidian/src/releases.json`; `npm run release` won't start without it, and prints what people will be told before it commits:
+
+- `version`: the version this release will have.
+- `headline`: one line on why to update, the main message of the notice that a new version is out. Needed unless the release is quiet.
+- `notes` (optional): what changed, in words for people who use Tracecards, shown once after they update. A release without notes, such as a small fix, shows nothing.
+- `notify` (optional): `false` for a release not worth a notice. It reaches people with the next release that is.
+- `urgent` (optional): `true` for a release people should get soon, such as a fix for lost cards. Its notice comes back daily instead of weekly.
+
+The plugin offers a new version at most once a week (daily when it's urgent), however often releases come out.
 
 ```sh
 npm run release -- minor     # or patch, major
 git push --follow-tags
 ```
 
-`npm run release` runs the checks, bumps the version in `package.json` and `manifest.json`, records it in `versions.json` with the `minAppVersion` it needs, and makes a `chore(release): x.y.z` commit tagged `x.y.z`. Pushing the tag runs `.github/workflows/release.yml`, which builds the plugin, attests the files and publishes the GitHub release, with notes made from the `feat`, `fix` and `perf` commits since the last release. Obsidian offers the update once `manifest.json` on `main` has the new version.
+`npm run release` runs the checks, bumps the version in `package.json` and `manifest.json`, records it in `versions.json` with the `minAppVersion` it needs, and makes a `chore(release): x.y.z` commit tagged `x.y.z`. Pushing the tag runs `.github/workflows/release.yml`, which builds the plugin and `update.json` (from `releases.json`), attests the files and publishes the GitHub release, with notes made from the `feat`, `fix` and `perf` commits since the last release. Obsidian offers the update once `manifest.json` on `main` has the new version.
 
 Use `patch` for fixes only, `minor` for new features and `major` for changes that break existing vaults or settings. Raise `minAppVersion` in `manifest.json` before releasing when the plugin starts using a newer Obsidian API.
 

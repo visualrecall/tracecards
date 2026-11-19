@@ -40,6 +40,8 @@ jobs:
       - run: npm run check
       - run: npm run build
       - run: node scripts/release-notes.mjs "$GITHUB_REF_NAME" > apps/obsidian/dist/notes.md
+      # What the plugin reads to offer updates: see scripts/update-feed.mjs.
+      - run: node scripts/update-feed.mjs "$GITHUB_REF_NAME" > apps/obsidian/dist/update.json
 
       - uses: actions/upload-artifact@v7
         with:
@@ -69,6 +71,7 @@ jobs:
             main.js
             manifest.json
             styles.css
+            update.json
 
       # Created as a draft and published once its files are attached, which immutable releases need.
       - name: Publish the release
@@ -76,5 +79,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag --draft \
-            --title "$GITHUB_REF_NAME" --notes-file notes.md main.js manifest.json styles.css
+            --title "$GITHUB_REF_NAME" --notes-file notes.md main.js manifest.json styles.css update.json
           gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false
